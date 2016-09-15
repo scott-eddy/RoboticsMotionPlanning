@@ -1,0 +1,5 @@
+#Ignore file used to specify what files/directories not to version under git
+.DS_Store
+build
+*.o
+*.bin

@@ -6,6 +6,7 @@
 
 #pragma once
 #include <vector>
+#include <iostream>
 
 class Map{
 public:
@@ -25,6 +26,18 @@ public:
 
 	//! Represent a matrix as a vector of vectors.  
 	//! Could be done with template matrix class ala Eigen
-	std::vector<std::vector<int> > spaceMatrix;
+	std::vector<std::vector<uint8_t> > spaceMatrix;
 
+	int debug_value;
+
+	/**
+	 * @brief prints the elements of the space matrix
+	 * @details Prints spaceMatrix out the the terminal
+	 *          with * == occupied space
+	 *              "" == free space
+	 * 
+	 * @param os [description]
+	 * @param mapObj map to print
+	 */
+	friend std::ostream &operator<<(std::ostream &os,Map const &mapObj);
 };

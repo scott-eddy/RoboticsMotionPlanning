@@ -28,16 +28,15 @@ public:
 	//! Could be done with template matrix class ala Eigen
 	std::vector<std::vector<uint8_t> > spaceMatrix;
 
-	int debug_value;
-
 	/**
-	 * @brief prints the elements of the space matrix
-	 * @details Prints spaceMatrix out the the terminal
-	 *          with * == occupied space
-	 *              "" == free space
-	 * 
-	 * @param os [description]
-	 * @param mapObj map to print
-	 */
+ 	* @brief Prints the map as ASCII 
+ 	* @details Prints a representation of the map with free space
+ 	*          printed as " " and occupied space printed with "*"
+ 	*          The map is bordered with "-" at top and bottom and "|"
+ 	*          on either side
+ 	* 
+ 	* @param os ostream to be printed to 
+ 	* @param mapObj map object to be printed out
+ 	*/
 	friend std::ostream &operator<<(std::ostream &os,Map const &mapObj);
 };

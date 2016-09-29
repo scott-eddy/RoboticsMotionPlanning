@@ -7,9 +7,20 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include "common.h"
+#include "room.h"
+#include "rectangle_room.h"
+//Forward declaration of room
+class Room;
 
 class Map{
 public:
+	/**
+	 * @brief Default constructor
+	 * @details makes a map of default size [30x30]
+	 */
+	Map();
+
 	/**
 	 * @brief Constructor of th map
 	 * @details Generates the matrix of free and occupied space
@@ -39,4 +50,21 @@ public:
  	* @param mapObj map object to be printed out
  	*/
 	friend std::ostream &operator<<(std::ostream &os,Map const &mapObj);
+
+	/**
+	 * @brief initializes a room and stores a pointer of it
+	 * @details Not typically needed, as all information for each room is stored
+	 *          in the space matrix of this class.  However, in the future having access
+	 *          to rooms might be handy
+	 * 
+	 * @param xFreeSpace [description]
+	 * @param yFreeSpace [description]
+	 * @param origin [description]
+	 */
+	void addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin);
+
+private:
+	int sizeX;
+	int sizeY;
+	std::vector<std::unique_ptr<Room>> roomVector;
 };

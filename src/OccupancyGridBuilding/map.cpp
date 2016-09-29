@@ -1,23 +1,24 @@
 /**
  * Implementation of the Map class
  */
-
 #include "map.h"
-Map::Map(int sizeX, int sizeY) : spaceMatrix(sizeX, std::vector<uint8_t>(sizeY)){
-	
-	//TODO: use a proper modern range for this init loop
-	for(int i = 0; i<sizeX; ++i){
-		for(int j = 0; j<sizeY; ++j){
-			spaceMatrix[i][j] = 0;
-			if(j == 3){
-				spaceMatrix[i][j] = 1;
-			}
-		}
-	}
 
+Map::Map() : spaceMatrix(30, std::vector<uint8_t>(30)){
+	this->sizeX = 30; //Default map size
+	this->sizeY = 30; //Default map size
+}
+
+Map::Map(int sizeX, int sizeY) : spaceMatrix(sizeX, std::vector<uint8_t>(sizeY)){
+	this->sizeX = sizeX;
+	this->sizeY = sizeY;
 }
 
 Map::~Map(){
+}
+
+void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
+	std::unique_ptr<RectangleRoom> pRect(new RectangleRoom(std::get<0>(freeSpace),std::get<1>(freeSpace),origin,*this));
+	roomVector.push_back(std::move(pRect));
 }
 
 

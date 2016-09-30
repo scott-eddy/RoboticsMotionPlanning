@@ -10,6 +10,7 @@
 #include "common.h"
 #include "room.h"
 #include "rectangle_room.h"
+#include "matrix.h"
 //Forward declaration of room
 class Room;
 
@@ -37,7 +38,7 @@ public:
 
 	//! Represent a matrix as a vector of vectors.  
 	//! Could be done with template matrix class ala Eigen
-	std::vector<std::vector<uint8_t> > spaceMatrix;
+	mutable std::vector<std::vector<uint8_t> > spaceMatrix;
 
 	/**
  	* @brief Prints the map as ASCII 
@@ -57,11 +58,14 @@ public:
 	 *          in the space matrix of this class.  However, in the future having access
 	 *          to rooms might be handy
 	 * 
-	 * @param xFreeSpace [description]
-	 * @param yFreeSpace [description]
+	 * @param 
 	 * @param origin [description]
 	 */
 	void addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin);
+
+	void fillSpace(std::vector<mapTools::Point> pointsToFill) const;
+
+	void printMatrix();
 
 private:
 	int sizeX;

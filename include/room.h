@@ -29,7 +29,7 @@ public:
 
 protected:
 	Room(const Map& map) : parentMap(map){};
-	virtual void fillSpace() = 0;
+	virtual void populateMap() = 0;
 	const Map& parentMap;
 	int xFreeSpace;
 	int yFreeSpace;

@@ -15,5 +15,6 @@ int main(){
 
 	myMap.addRoom(roomFreeSpace,roomOrigin);
 	std::cout << myMap <<std::endl;
+
 	return 0;
 }

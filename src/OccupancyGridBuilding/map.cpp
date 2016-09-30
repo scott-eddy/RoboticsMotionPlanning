@@ -21,6 +21,22 @@ void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
 	roomVector.push_back(std::move(pRect));
 }
 
+void Map::fillSpace(std::vector<mapTools::Point> pointsToFill) const{
+	for(auto const& currentPoint : pointsToFill){
+		spaceMatrix[currentPoint.x][currentPoint.y] = 1;
+	}
+}
+
+void Map::printMatrix(){
+for(auto const& rowVect : spaceMatrix){
+		//rowVect is a reference to the spaceMatrix vector
+		for(auto const& matrixValue : rowVect){
+			std::cout << static_cast<int>(matrixValue) << ",";
+		}
+		std::cout << std::endl;
+	}
+}
+
 
 std::ostream& operator<<(std::ostream &os,Map const &mapObj){
 /**

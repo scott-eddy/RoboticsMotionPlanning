@@ -10,7 +10,7 @@
 #include "common.h"
 #include "room.h"
 #include "rectangle_room.h"
-#include "matrix.h"
+
 //Forward declaration of room
 class Room;
 

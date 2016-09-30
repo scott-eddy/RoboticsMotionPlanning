@@ -23,7 +23,8 @@ void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
 
 void Map::fillSpace(std::vector<mapTools::Point> pointsToFill) const{
 	for(auto const& currentPoint : pointsToFill){
-		spaceMatrix[currentPoint.x][currentPoint.y] = 1;
+		//N.B. y represents the row you are in and x represents the column
+		spaceMatrix[currentPoint.y][currentPoint.x] = 1;
 	}
 }
 

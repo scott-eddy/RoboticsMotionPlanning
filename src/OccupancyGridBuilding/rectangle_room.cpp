@@ -18,14 +18,19 @@ void RectangleRoom::populateMap(){
 	upperLeft.x = (origin.x - std::floor(xFreeSpace/2)) - 1;
 	upperLeft.y = (origin.y - std::floor(yFreeSpace/2)) - 1;
 
-	for(int i = upperLeft.x; i<=upperLeft.x + xFreeSpace; i++){
-		mapTools::Point currentPoint;
-		currentPoint.x = i;
-		currentPoint.y = upperLeft.y;
-		pointsToFill.push_back(currentPoint);
-	}
+	mapTools::Point upperRight;
+	upperRight.x = (origin.x + std::floor(xFreeSpace/2)) - 1;
+	upperRight.y = (origin.y - std::floor(yFreeSpace/2)) - 1;
 
-	parentMap.fillSpace(pointsToFill);
+	mapTools::Point lowerLeft;
+	lowerLeft.x = (origin.x - std::floor(xFreeSpace/2)) - 1;
+	lowerLeft.y = (origin.y + std::floor(yFreeSpace/2)) - 1;
+
+	mapTools::Point lowerRight;
+	lowerRight.x = (origin.x + std::floor(xFreeSpace/2)) - 1;
+	lowerRight.y = (origin.y + std::floor(yFreeSpace/2)) - 1;
+
+
 
 }
 

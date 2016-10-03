@@ -6,6 +6,7 @@
 #pragma once
 #include "room.h"
 #include <cmath>
+#include "line.h"
 /**
  * @brief Abstract class defining what makes up a Room in a map
  * @details [long description]

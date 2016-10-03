@@ -23,7 +23,8 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(map_lib ${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/map.cpp
-					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/rectangle_room.cpp)
+					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/rectangle_room.cpp
+					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/line.cpp)
 
 add_executable(map_generation ${CMAKE_CURRENT_SOURCE_DIR}/src/map_generation.cpp)
 

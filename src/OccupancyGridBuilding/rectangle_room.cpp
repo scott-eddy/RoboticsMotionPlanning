@@ -1,7 +1,7 @@
 #include "rectangle_room.h"
 
-RectangleRoom::RectangleRoom(int xFreeSpace, int yFreeSpace,const mapTools::Point& origin, const Map& mapToFill):
-Room(mapToFill)
+RectangleRoom::RectangleRoom(int xFreeSpace, int yFreeSpace,const mapTools::Point& origin, const Map& parentMap):
+Room(parentMap)
 {
 	this->xFreeSpace = xFreeSpace;
 	this->yFreeSpace = yFreeSpace;
@@ -30,7 +30,32 @@ void RectangleRoom::populateMap(){
 	lowerRight.x = (origin.x + std::floor(xFreeSpace/2)) - 1;
 	lowerRight.y = (origin.y + std::floor(yFreeSpace/2)) - 1;
 
+	std::vector<Line> roomBorder;
 
+	Line topLine(std::vector<mapTools::Point>({upperLeft,upperRight}));
+	Line bottomLine(std::vector<mapTools::Point>({lowerLeft,lowerRight}));
+	Line leftLine(std::vector<mapTools::Point>({upperLeft,lowerLeft}));
+	Line rightLine(std::vector<mapTools::Point>({upperRight,lowerRight}));
+
+	roomBorder.push_back(topLine);
+	roomBorder.push_back(bottomLine);
+	roomBorder.push_back(leftLine);
+	roomBorder.push_back(rightLine);
+
+	for(auto const &currentLine : roomBorder){
+		parentMap.fillSpace(currentLine.getPointsOnLine());
+	}
+}
+
+mapTools::Rect RectangleRoom::getBoundingBox(){
+	mapTools::Rect boundingBox;
+	boundingBox.topLeft.x = origin.x - std::floor(xFreeSpace/2);
+	boundingBox.topLeft.y = origin.y - std::floor(yFreeSpace/2);
+
+	boundingBox.bottomRight.x = origin.x + std::floor(xFreeSpace/2);
+	boundingBox.bottomRight.y = origin.y + std::floor(yFreeSpace/2);
+
+	return boundingBox;
 
 }
 

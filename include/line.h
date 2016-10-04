@@ -7,7 +7,7 @@ class Line{
 public:
 	Line(std::vector<mapTools::Point> pointsToConnect);
 	~Line();
-	std::vector<mapTools::Point> getPointsOnLine();
+	std::vector<mapTools::Point> getPointsOnLine() const;
 
 private:
 	std::vector<mapTools::Point> pointsOnLine;

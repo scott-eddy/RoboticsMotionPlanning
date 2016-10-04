@@ -16,6 +16,7 @@ class RectangleRoom : public Room{
 public:
 	RectangleRoom(int xFreeSpace, int yFreeSpace, const mapTools::Point& origin, const Map& parentMap);
 	~RectangleRoom();
+	mapTools::Rect getBoundingBox();
 
 private:
 	void populateMap();

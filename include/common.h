@@ -6,4 +6,9 @@ namespace mapTools{
 		int x;
 		int y;
 	};
+
+	struct Rect{
+		Point topLeft;
+		Point bottomRight;
+	};
 }

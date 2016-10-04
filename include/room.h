@@ -25,6 +25,7 @@ class Map;
 class Room{
 public:
 	virtual ~Room() = 0;
+	virtual mapTools::Rect getBoundingBox() = 0;
 	//virtual void addWall(const Wall& wallToAdd) = 0;
 
 protected:

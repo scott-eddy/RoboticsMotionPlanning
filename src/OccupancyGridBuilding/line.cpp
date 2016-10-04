@@ -5,7 +5,7 @@ Line::Line(std::vector<mapTools::Point> pointsToConnect) : pointsOnLine(0){
 }
 Line::~Line(){}
 
-std::vector<mapTools::Point> Line::getPointsOnLine(){
+std::vector<mapTools::Point> Line::getPointsOnLine() const{
 	return this->pointsOnLine;
 }
 

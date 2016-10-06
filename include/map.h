@@ -50,7 +50,7 @@ public:
  	* @param os ostream to be printed to 
  	* @param mapObj map object to be printed out
  	*/
-	friend std::ostream &operator<<(std::ostream &os,Map const &mapObj);
+	friend std::ostream &operator<<(std::ostream &os,const Map &mapObj);
 
 	/**
 	 * @brief initializes a room and stores a pointer of it
@@ -66,6 +66,8 @@ public:
 	void fillSpace(std::vector<mapTools::Point> pointsToFill) const;
 
 	void printMatrix();
+
+	bool roomIntersection(const mapTools::Rect &potentialRoom);
 
 private:
 	int sizeX;

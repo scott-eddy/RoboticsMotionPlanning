@@ -5,15 +5,22 @@
 #include "rectangle_room.h"
 #include <iostream>
 int main(){
-	int maxX = 30;
+	int maxX = 100;
 	int maxY = 30;
-	Map myMap;
+	Map myMap(maxX,maxY);
+
 	mapTools::Point roomOrigin;
 	roomOrigin.x = 15;
 	roomOrigin.y = 15;
 	std::tuple<int,int> roomFreeSpace(10,10);
-
 	myMap.addRoom(roomFreeSpace,roomOrigin);
+
+	roomOrigin.x = roomOrigin.x+30;
+	roomOrigin.y = roomOrigin.y;
+	roomFreeSpace = std::tuple<int,int>(20,7);
+	myMap.addRoom(roomFreeSpace,roomOrigin);
+
+
 	std::cout << myMap <<std::endl;
 
 	return 0;

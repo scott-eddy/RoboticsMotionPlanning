@@ -33,6 +33,13 @@ void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
 	}
 }
 
+void Map::addClutterToRoom(int roomNum){
+	if(roomNum >= 0 && roomNum < roomVector.size()){
+		roomVector[roomNum]->addClutter();
+	}
+
+}
+
 bool Map::roomIntersection(const mapTools::Rect &potentialRoom){
 	bool anyIntersection = false;
 	//TODO: one giant if statement for check
@@ -43,10 +50,10 @@ bool Map::roomIntersection(const mapTools::Rect &potentialRoom){
 		bool aboveCurrentRoom = (roomInVector->getBoundingBox().bottomRight.y  < potentialRoom.topLeft.y);
 		bool belowCurrentRoom = (roomInVector->getBoundingBox().topLeft.y > potentialRoom.bottomRight.y);
 
-		std::cout << "Vector to left of current room: " << leftOfCurrentRoom << std::endl;
-		std::cout << "Vector to right of current room: " << rightOfCurrentRoom << std::endl;
-		std::cout << "Vector above current room: " << aboveCurrentRoom << std::endl;
-		std::cout << "Vector below current room: " << belowCurrentRoom << std::endl;
+		// std::cout << "Vector to left of current room: " << leftOfCurrentRoom << std::endl;
+		// std::cout << "Vector to right of current room: " << rightOfCurrentRoom << std::endl;
+		// std::cout << "Vector above current room: " << aboveCurrentRoom << std::endl;
+		// std::cout << "Vector below current room: " << belowCurrentRoom << std::endl;
 
 		if (leftOfCurrentRoom || rightOfCurrentRoom || aboveCurrentRoom || belowCurrentRoom){
     		anyIntersection = false; // room in vector is below current room

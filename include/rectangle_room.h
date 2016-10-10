@@ -17,7 +17,11 @@ public:
 	RectangleRoom(int xFreeSpace, int yFreeSpace, const mapTools::Point& origin, const Map& parentMap);
 	~RectangleRoom();
 	mapTools::Rect getBoundingBox();
+	void addClutter();
 
 private:
 	void populateMap();
+	mapTools::Point upperLeft;
+	mapTools::Point	lowerRight;
+
 };

@@ -20,6 +20,7 @@ int main(){
 	roomFreeSpace = std::tuple<int,int>(20,7);
 	myMap.addRoom(roomFreeSpace,roomOrigin);
 
+	myMap.addClutterToRoom(1);
 
 	std::cout << myMap <<std::endl;
 

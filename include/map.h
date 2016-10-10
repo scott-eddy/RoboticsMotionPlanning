@@ -69,6 +69,8 @@ public:
 
 	bool roomIntersection(const mapTools::Rect &potentialRoom);
 
+	void addClutterToRoom(int roomNum);
+
 private:
 	int sizeX;
 	int sizeY;

@@ -2,18 +2,49 @@
  * Implementation of the Map class
  */
 #include "map.h"
-
+#include <random>
 Map::Map() : spaceMatrix(30, std::vector<uint8_t>(30)){
 	this->sizeX = 30; //Default map size
 	this->sizeY = 30; //Default map size
+	//Rooms should take up less than twenty percent of the maze
+	this->maxRoomX = (0.2*this->sizeX); 
+	this->maxRoomY = (0.2*this->sizeY);
 }
 
 Map::Map(int sizeX, int sizeY) : spaceMatrix(sizeY, std::vector<uint8_t>(sizeX)){
 	this->sizeX = sizeX;
 	this->sizeY = sizeY;
+	this->maxRoomX = (0.2*this->sizeX); 
+	this->maxRoomY = (0.2*this->sizeY);
 }
 
 Map::~Map(){
+}
+
+void Map::generate(){
+
+	int numberOfAttempts = 0;
+	const int maxAttempts = 50; 
+	std::random_device rd; 
+	std::mt19937_64 randomNumGenerator(rd());
+	std::uniform_int_distribution<> roomUniformX(1,this->maxRoomX);
+	std::uniform_int_distribution<> roomUniformY(1,this->maxRoomY);	
+	std::uniform_int_distribution<> mapUniformX(1,this->sizeX);
+	std::uniform_int_distribution<> mapUniformY(1,this->sizeY);
+	std::tuple<int,int> curRoomFreeSpace;
+	mapTools::Point curRoomOrigin;
+	while(numberOfAttempts <= maxAttempts){
+		int xFreeSpace = roomUniformX(randomNumGenerator);
+		int yFreeSpace = roomUniformY(randomNumGenerator);
+		curRoomFreeSpace = std::tuple<int,int>(xFreeSpace,yFreeSpace);
+	
+		curRoomOrigin.x = mapUniformX(randomNumGenerator);
+		curRoomOrigin.y = mapUniformY(randomNumGenerator);
+
+		this->addRoom(curRoomFreeSpace,curRoomOrigin);
+		numberOfAttempts++;
+	}
+
 }
 
 void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
@@ -24,7 +55,6 @@ void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
 	boundingBox.bottomRight.x = origin.x + std::floor(std::get<0>(freeSpace)/2);
 	boundingBox.bottomRight.y = origin.y + std::floor(std::get<1>(freeSpace)/2);
 	
-	bool dummy = true;
 	if(!roomIntersection(boundingBox)){
 		std::unique_ptr<RectangleRoom> pRect(new RectangleRoom(std::get<0>(freeSpace),std::get<1>(freeSpace),origin,*this));
 		roomVector.push_back(std::move(pRect));

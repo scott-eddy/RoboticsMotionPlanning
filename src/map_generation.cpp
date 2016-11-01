@@ -8,7 +8,8 @@ int main(){
 	int maxX = 100;
 	int maxY = 30;
 	Map myMap(maxX,maxY);
-
+	myMap.generate();
+	/*
 	mapTools::Point roomOrigin;
 	roomOrigin.x = 15;
 	roomOrigin.y = 15;
@@ -21,7 +22,7 @@ int main(){
 	myMap.addRoom(roomFreeSpace,roomOrigin);
 
 	myMap.addClutterToRoom(1);
-
+	*/
 	std::cout << myMap <<std::endl;
 
 	return 0;

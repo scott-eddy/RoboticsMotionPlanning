@@ -63,16 +63,38 @@ public:
 	 */
 	void addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin);
 
+	/**
+	 * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to one
+	 *
+	 */
 	void fillSpace(std::vector<mapTools::Point> pointsToFill) const;
 
+	/** 
+	 * @brief Prints the numerical representation of the Map's space matrix
+	 *
+	 */
 	void printMatrix();
 
+	/**
+	 * @brief returns true if two rooms in the map intersect one another
+	 */
 	bool roomIntersection(const mapTools::Rect &potentialRoom);
 
+	/**
+	 * @brief Fills space inside of a room
+	 *
+	 */
 	void addClutterToRoom(int roomNum);
-
+	
+	/**
+	 * @brief Populates a map with rooms and passageways
+	 * TODO move this functionality to a factory class
+	 */ 
+	void generate();
 private:
 	int sizeX;
 	int sizeY;
+	int maxRoomX;
+	int maxRoomY;
 	std::vector<std::unique_ptr<Room>> roomVector;
 };

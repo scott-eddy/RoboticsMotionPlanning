@@ -72,9 +72,8 @@ void Map::addClutterToRoom(int roomNum){
 
 bool Map::roomIntersection(const mapTools::Rect &potentialRoom){
 	bool anyIntersection = false;
-	//TODO: one giant if statement for check
+
 	for(auto const& roomInVector : roomVector){
-		
 		bool leftOfCurrentRoom = (roomInVector->getBoundingBox().bottomRight.x < potentialRoom.topLeft.x);
 		bool rightOfCurrentRoom = (roomInVector->getBoundingBox().topLeft.x > potentialRoom.bottomRight.x);
 		bool aboveCurrentRoom = (roomInVector->getBoundingBox().bottomRight.y  < potentialRoom.topLeft.y);
@@ -96,12 +95,16 @@ bool Map::roomIntersection(const mapTools::Rect &potentialRoom){
 
 void Map::fillSpace(std::vector<mapTools::Point> pointsToFill) const{
 	for(auto const& currentPoint : pointsToFill){
-		if(currentPoint.y < sizeY && currentPoint.x < sizeX){
-		//N.B. y represents the row you are in and x represents the column
-		spaceMatrix[currentPoint.y][currentPoint.x] = 1;
-		}else{
-			//TODO: throw some error here?
-		}
+        if(currentPoint.y > 0 && currentPoint.x > 0){
+		    if(currentPoint.y < sizeY && currentPoint.x < sizeX){
+		    //N.B. y represents the row you are in and x represents the column
+		        spaceMatrix[currentPoint.y][currentPoint.x] = 1;
+		    }else{
+			    //TODO: throw some error here?
+	    	}   
+        }else{
+            //TODO: throw some error here?
+        } 
 	}
 }
 

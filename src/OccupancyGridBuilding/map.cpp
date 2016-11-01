@@ -27,8 +27,8 @@ void Map::generate(){
 	const int maxAttempts = 50; 
 	std::random_device rd; 
 	std::mt19937_64 randomNumGenerator(rd());
-	std::uniform_int_distribution<> roomUniformX(1,this->maxRoomX);
-	std::uniform_int_distribution<> roomUniformY(1,this->maxRoomY);	
+	std::uniform_int_distribution<> roomUniformX(3,this->maxRoomX);
+	std::uniform_int_distribution<> roomUniformY(3,this->maxRoomY);	
 	std::uniform_int_distribution<> mapUniformX(1,this->sizeX);
 	std::uniform_int_distribution<> mapUniformY(1,this->sizeY);
 	std::tuple<int,int> curRoomFreeSpace;
@@ -94,18 +94,29 @@ bool Map::roomIntersection(const mapTools::Rect &potentialRoom){
 }
 
 void Map::fillSpace(std::vector<mapTools::Point> pointsToFill) const{
-	for(auto const& currentPoint : pointsToFill){
-        if(currentPoint.y > 0 && currentPoint.x > 0){
-		    if(currentPoint.y < sizeY && currentPoint.x < sizeX){
-		    //N.B. y represents the row you are in and x represents the column
-		        spaceMatrix[currentPoint.y][currentPoint.x] = 1;
-		    }else{
-			    //TODO: throw some error here?
-	    	}   
-        }else{
-            //TODO: throw some error here?
-        } 
-	}
+    //Fill the space matrix with the x,y points in pointsToFill, with
+    //bounds checking
+	for(auto &currentPoint : pointsToFill){
+        if(currentPoint.y < 0){
+            currentPoint.y = 0;
+        }
+        if(currentPoint.x < 0){
+            currentPoint.x = 0;
+        }
+        if(currentPoint.y >= sizeY){
+            currentPoint.y = sizeY-1; //offset by 1 for 0 index notation
+        }
+        if(currentPoint.x >= sizeX){
+            currentPoint.x = sizeX-1; //offset by 1 for 0 index notation
+        }
+        
+        //std::cout << "Filling X,Y :" << currentPoint.x << "," << currentPoint.y << std::endl;
+        //std::cout << "Max X,Y     :" << sizeX << "," << sizeY << std::endl;
+
+		//N.B. y represents the row you are in and x represents the column
+	    spaceMatrix[currentPoint.y][currentPoint.x] = 1;
+        
+    }
 }
 
 void Map::printMatrix(){

@@ -100,3 +100,28 @@ void RectangleRoom::addClutter(){
 
 }
 
+void RectangleRoom::fill(mapTools::SPACE_TYPE typeToFill){
+    std::vector<mapTools::Point> points_to_fill;
+	for(int i = upperLeft.x; i <= lowerRight.x; i++){
+    	for(int j = upperLeft.y; j <= lowerRight.y; j++){
+			mapTools::Point filledSpace;
+			filledSpace.x = i;
+			filledSpace.y = j;
+			points_to_fill.push_back(filledSpace);
+		}
+
+	}	
+    
+    switch(typeToFill){
+        case(mapTools::SPACE_TYPE::OCCUPIED):{
+           parentMap.fillSpace(points_to_fill);
+           break;
+       }
+       case(mapTools::SPACE_TYPE::EMPTY):{
+            parentMap.emptySpace(points_to_fill);
+            break;
+       }
+
+    }
+}
+

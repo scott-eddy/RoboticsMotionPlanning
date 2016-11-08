@@ -28,7 +28,7 @@ public:
 	virtual mapTools::Rect getBoundingBox() = 0;
 	//virtual void addWall(const Wall& wallToAdd) = 0;
 	virtual void addClutter() = 0;
-
+    virtual void fill(mapTools::SPACE_TYPE typeToFill) = 0;
 protected:
 	Room(const Map& map) : parentMap(map){};
 	virtual void populateMap() = 0;

@@ -23,12 +23,13 @@ Map::~Map(){
 
 void Map::generate(){
 
+    const int smallestRoomFreeSpace = 4; // Want rooms to be at least 2 tiles deep
 	int numberOfAttempts = 0;
 	const int maxAttempts = 50; 
 	std::random_device rd; 
 	std::mt19937_64 randomNumGenerator(rd());
-	std::uniform_int_distribution<> roomUniformX(3,this->maxRoomX);
-	std::uniform_int_distribution<> roomUniformY(3,this->maxRoomY);	
+	std::uniform_int_distribution<> roomUniformX(smallestRoomFreeSpace,this->maxRoomX);
+	std::uniform_int_distribution<> roomUniformY(smallestRoomFreeSpace,this->maxRoomY);	
 	std::uniform_int_distribution<> mapUniformX(1,this->sizeX);
 	std::uniform_int_distribution<> mapUniformY(1,this->sizeY);
 	std::tuple<int,int> curRoomFreeSpace;
@@ -40,14 +41,50 @@ void Map::generate(){
 	
 		curRoomOrigin.x = mapUniformX(randomNumGenerator);
 		curRoomOrigin.y = mapUniformY(randomNumGenerator);
+        
+		if(this->addRoom(curRoomFreeSpace,curRoomOrigin)){
+            roomVector.back()->fill(mapTools::SPACE_TYPE::OCCUPIED);
+        }	
+        numberOfAttempts++;
+        
+        
 
-		this->addRoom(curRoomFreeSpace,curRoomOrigin);
-		numberOfAttempts++;
-	}
+    }
 
 }
 
-void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
+void Map::makeMaze(){
+    for(int x = 0; x < this->sizeX; x++){
+        for(int y = 0; y < this->sizeY; y++){
+            if(this->spaceMatrix[y][x] != mapTools::SPACE_TYPE::EMPTY){
+                this->growTree(x,y);
+            }
+        }
+    } 
+}
+
+
+void Map::growTree(int x, int y){
+    mapTools::Point startLocation(x,y);
+    std::vector<mapTools::Point> trackedSpace;
+    this->fillSpace(startLocation);
+    trackedSpace.push_back(startLocation);
+    
+    std::vector<mapTools::Point> adjacentSpace;
+    while(trackedSpace.size() != 0){ 
+        adjacentSpace = this->findAdjacentSpace(mapTools::SPACE_TYPE::EMPTY);
+    }
+}
+
+std::vector<mapTools::Point> Map::findAdjacentSpace(mapTools::SPACE_TYPE spaceType){
+    
+    for(int dir = mapTools::DIRECTION::NORTH; dir < mapTools::DIRECTION::LAST; dir++){
+
+    }
+}
+
+
+bool Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
 	mapTools::Rect boundingBox;
 	boundingBox.topLeft.x = origin.x - std::floor(std::get<0>(freeSpace)/2);
 	boundingBox.topLeft.y = origin.y - std::floor(std::get<1>(freeSpace)/2);
@@ -58,8 +95,10 @@ void Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
 	if(!roomIntersection(boundingBox)){
 		std::unique_ptr<RectangleRoom> pRect(new RectangleRoom(std::get<0>(freeSpace),std::get<1>(freeSpace),origin,*this));
 		roomVector.push_back(std::move(pRect));
-	}else{
-		std::cout << "ROOM OVERLAP" << std::endl;
+        return true;
+    }else{
+        return false;
+		//std::cout << "ROOM OVERLAP" << std::endl;
 	}
 }
 
@@ -114,8 +153,53 @@ void Map::fillSpace(std::vector<mapTools::Point> pointsToFill) const{
         //std::cout << "Max X,Y     :" << sizeX << "," << sizeY << std::endl;
 
 		//N.B. y represents the row you are in and x represents the column
-	    spaceMatrix[currentPoint.y][currentPoint.x] = 1;
+	    spaceMatrix[currentPoint.y][currentPoint.x] = mapTools::SPACE_TYPE::OCCUPIED;
         
+    }
+}
+
+void Map::fillSpace(mapTools::Point pointToFill) const{  
+    if(pointToFill.y < 0){
+        pointToFill.y = 0;
+    }
+    if(pointToFill.x < 0){
+        pointToFill.x = 0;
+    }
+    if(pointToFill.y >= sizeY){
+        pointToFill.y = sizeY-1; //offset by 1 for 0 index notation
+    }
+    if(pointToFill.x >= sizeX){
+        pointToFill.x = sizeX-1; //offset by 1 for 0 index notation
+    }
+      
+    //std::cout << "Filling X,Y :" << currentPoint.x << "," << currentPoint.y << std::endl;
+    //std::cout << "Max X,Y     :" << sizeX << "," << sizeY << std::endl;
+	//N.B. y represents the row you are in and x represents the column
+    spaceMatrix[pointToFill.y][pointToFill.x] = mapTools::SPACE_TYPE::OCCUPIED;
+}
+
+void Map::emptySpace(std::vector<mapTools::Point> pointsToFill) const{
+    //Fill the space matrix with the x,y points in pointsToFill, with
+    //bounds checking
+	for(auto &currentPoint : pointsToFill){
+        if(currentPoint.y < 0){
+            currentPoint.y = 0;
+        }
+        if(currentPoint.x < 0){
+            currentPoint.x = 0;
+        }
+        if(currentPoint.y >= sizeY){
+            currentPoint.y = sizeY-1; //offset by 1 for 0 index notation
+        }
+        if(currentPoint.x >= sizeX){
+            currentPoint.x = sizeX-1; //offset by 1 for 0 index notation
+        }
+        
+        //std::cout << "Filling X,Y :" << currentPoint.x << "," << currentPoint.y << std::endl;
+        //std::cout << "Max X,Y     :" << sizeX << "," << sizeY << std::endl;
+
+		//N.B. y represents the row you are in and x represents the column
+	    spaceMatrix[currentPoint.y][currentPoint.x] = mapTools::SPACE_TYPE::EMPTY; 
     }
 }
 

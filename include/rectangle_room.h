@@ -18,7 +18,7 @@ public:
 	~RectangleRoom();
 	mapTools::Rect getBoundingBox();
 	void addClutter();
-
+    void fill(mapTools::SPACE_TYPE typeToFill);
 private:
 	void populateMap();
 	mapTools::Point upperLeft;

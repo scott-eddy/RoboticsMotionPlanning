@@ -38,6 +38,7 @@ public:
 
 	//! Represent a matrix as a vector of vectors.  
 	//! Could be done with template matrix class ala Eigen
+    //! mutable such that it can be altered from the const functions
 	mutable std::vector<std::vector<uint8_t> > spaceMatrix;
 
 	/**
@@ -61,15 +62,24 @@ public:
 	 * @param 
 	 * @param origin [description]
 	 */
-	void addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin);
+	bool addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin);
 
 	/**
-	 * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to one
+	 * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to mapTools::SPACE_TYPE::OCCUPIED
 	 *
 	 */
 	void fillSpace(std::vector<mapTools::Point> pointsToFill) const;
 
-	/** 
+
+    void fillSpace(mapTools::Point pointToFill) const;
+
+	/**
+	 * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to mapTools::SPACE_TYPE::EMPTY 
+	 *
+	 */
+	void emptySpace(std::vector<mapTools::Point> pointsToFill) const;
+	
+    /** 
 	 * @brief Prints the numerical representation of the Map's space matrix
 	 *
 	 */
@@ -91,6 +101,16 @@ public:
 	 * TODO move this functionality to a factory class
 	 */ 
 	void generate();
+
+    void makeMaze();
+
+    /**
+     * @brief Makes perfect mazes in passage ways by carving space in directions
+     * 
+     */
+    void growTree(int x, int y);
+
+    std::vector<mapTools::Point> findAdjacentSpace(mapTools::SPACE_TYPE spaceType);
 private:
 	int sizeX;
 	int sizeY;

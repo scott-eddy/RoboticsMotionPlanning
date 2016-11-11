@@ -34,55 +34,221 @@ void Map::generate(){
 	std::uniform_int_distribution<> mapUniformY(1,this->sizeY);
 	std::tuple<int,int> curRoomFreeSpace;
 	mapTools::Point curRoomOrigin;
-	while(numberOfAttempts <= maxAttempts){
-		int xFreeSpace = roomUniformX(randomNumGenerator);
-		int yFreeSpace = roomUniformY(randomNumGenerator);
-		curRoomFreeSpace = std::tuple<int,int>(xFreeSpace,yFreeSpace);
-	
-		curRoomOrigin.x = mapUniformX(randomNumGenerator);
-		curRoomOrigin.y = mapUniformY(randomNumGenerator);
-        
-		if(this->addRoom(curRoomFreeSpace,curRoomOrigin)){
-            roomVector.back()->fill(mapTools::SPACE_TYPE::OCCUPIED);
-        }	
-        numberOfAttempts++;
-        
-        
-
-    }
+   
+	//while(numberOfAttempts <= maxAttempts){
+	//	int xFreeSpace = roomUniformX(randomNumGenerator);
+	//	int yFreeSpace = roomUniformY(randomNumGenerator);
+	//	curRoomFreeSpace = std::tuple<int,int>(xFreeSpace,yFreeSpace);
+	//
+	//	curRoomOrigin.x = mapUniformX(randomNumGenerator);
+	//	curRoomOrigin.y = mapUniformY(randomNumGenerator);
+    //    
+	//	if(this->addRoom(curRoomFreeSpace,curRoomOrigin)){
+    //        roomVector.back()->fill(mapTools::SPACE_TYPE::OCCUPIED);
+    //    }	
+    //    numberOfAttempts++;
+    //}
+    
+    this->makeMaze();
 
 }
 
 void Map::makeMaze(){
-    for(int x = 0; x < this->sizeX; x++){
-        for(int y = 0; y < this->sizeY; y++){
-            if(this->spaceMatrix[y][x] != mapTools::SPACE_TYPE::EMPTY){
-                this->growTree(x,y);
-            }
-        }
-    } 
+    //for(int x = 0; x < this->sizeX; x++){
+    //    for(int y = 0; y < this->sizeY; y++){
+    //        if(this->spaceMatrix[y][x] != mapTools::SPACE_TYPE::OCCUPIED){
+    //            this->growTree(x,y);
+    //        }
+    //    }
+    //} 
+    this->growTree(0,0);
 }
 
 
 void Map::growTree(int x, int y){
     mapTools::Point startLocation(x,y);
     std::vector<mapTools::Point> trackedSpace;
-    this->fillSpace(startLocation);
     trackedSpace.push_back(startLocation);
+    std::vector<mapTools::DIRECTION> directionsCanTravel;
+    mapTools::DIRECTION lastDirTrav = mapTools::DIRECTION::NORTH;
+    const int growLength = 2;
+    //Quick Check to see if we should fill the space we are at
+    this->findAdjacentSpace(growLength,trackedSpace.back(),mapTools::SPACE_TYPE::EMPTY,directionsCanTravel);
+    if(directionsCanTravel.size() != 0)
+        this->fillSpace(trackedSpace.back());
     
-    std::vector<mapTools::Point> adjacentSpace;
     while(trackedSpace.size() != 0){ 
-        adjacentSpace = this->findAdjacentSpace(mapTools::SPACE_TYPE::EMPTY);
+        //See which direction we can propigate this maze
+        directionsCanTravel.clear();
+        this->findAdjacentSpace(growLength,trackedSpace.back(),mapTools::SPACE_TYPE::EMPTY,directionsCanTravel);
+
+        if(directionsCanTravel.size() != 0){
+            //Prefer to travel in the same direction as before
+            if(std::find(directionsCanTravel.begin(), directionsCanTravel.end(), lastDirTrav) != directionsCanTravel.end()) {
+                //We can again travel in the same direction
+                //Fill the adjacent space and then move the appropriate lengh
+                this->fillAdjacentSpace(trackedSpace.back(),lastDirTrav);
+                trackedSpace.push_back(this->moveConsecutiveSpace(growLength,trackedSpace.back(),lastDirTrav));
+                this->fillSpace(trackedSpace.back());
+            } else {
+                this->fillAdjacentSpace(trackedSpace.back(),directionsCanTravel.front());
+                trackedSpace.push_back(this->moveConsecutiveSpace(growLength,trackedSpace.back(),directionsCanTravel.front()));
+                lastDirTrav = directionsCanTravel.front();
+                this->fillSpace(trackedSpace.back());
+            }
+        }else{
+            trackedSpace.pop_back();
+            //TODO reset last direction traveled?
+        }
+
     }
 }
 
-std::vector<mapTools::Point> Map::findAdjacentSpace(mapTools::SPACE_TYPE spaceType){
+void Map::findAdjacentSpace(const int numberOfTiles, const mapTools::Point &root, const mapTools::SPACE_TYPE &spaceType,std::vector<mapTools::DIRECTION> &directionToSpaceType){
+   //TODO is clearing the vector here correct?
+    if(numberOfTiles > 0){
+        directionToSpaceType.clear(); 
+        this->findAdjacentSpace(root, spaceType, directionToSpaceType);
+        
+        if(!directionToSpaceType.empty() && numberOfTiles > 1){
+            std::vector<mapTools::DIRECTION> rootDirections = directionToSpaceType;
+            directionToSpaceType.clear(); //Clear out vector again as we only can gaurantee one tile of motion here
+            for(const auto &dir : rootDirections){
+                std::vector<mapTools::DIRECTION> tempDirections;
+                bool numberTilesValid = true;
+                mapTools::Point nextTile = this->moveToAdjacentSpace(root,dir);
+                for(int i = 2; i <= numberOfTiles; i++){
+                    this->findAdjacentSpace(nextTile, spaceType, tempDirections);
+                    if(std::find(tempDirections.begin(), tempDirections.end(), dir) != tempDirections.end()) {
+                        //We can move in this direction, continue search
+                        tempDirections.clear();
+                        nextTile = this->moveToAdjacentSpace(nextTile,dir);
+                    }else{
+                        numberTilesValid = false;
+                        break;
+                    }
+                }
+                if(numberTilesValid){
+                    directionToSpaceType.push_back(dir);
+                }
+            }
+        }
+    }
+}
+
+void Map::findAdjacentSpace(const mapTools::Point &root, const mapTools::SPACE_TYPE &spaceType, std::vector<mapTools::DIRECTION> &dirToSpaceType){
     
     for(int dir = mapTools::DIRECTION::NORTH; dir < mapTools::DIRECTION::LAST; dir++){
+        switch(dir){
+            case mapTools::DIRECTION::NORTH:
+                //Qury the state of the space matrix in the row above this one, if it is in bounds
+                if(root.x >= 0 && root.x < this->sizeX){
+                    if(root.y-1 >=0 && root.y-1 < this->sizeY){
+                        if(this->spaceMatrix[root.y-1][root.x] == spaceType){
+                            dirToSpaceType.push_back(mapTools::DIRECTION::NORTH);
+                        }
+                    }
+                }
+                break;
+            
+            case mapTools::DIRECTION::EAST:
+                //Qury the state of the space matrix in the row above this one, if it is in bounds
+                if(root.x+1 >= 0 && root.x+1 < this->sizeX){
+                    if(root.y >=0 && root.y < this->sizeY){
+                        if(this->spaceMatrix[root.y][root.x+1] == spaceType){
+                            dirToSpaceType.push_back(mapTools::DIRECTION::EAST);
+                        }
+                    }
+                }
+                break;
+            
+            case mapTools::DIRECTION::SOUTH:
+                //Qury the state of the space matrix in the row above this one, if it is in bounds
+                if(root.x >= 0 && root.x < this->sizeX){
+                    if(root.y+1 >=0 && root.y+1 < this->sizeY){
+                        if(this->spaceMatrix[root.y+1][root.x] == spaceType){
+                            dirToSpaceType.push_back(mapTools::DIRECTION::SOUTH);
+                        }
+                    }
+                }
+                break;
 
-    }
+            case mapTools::DIRECTION::WEST:
+                //Qury the state of the space matrix in the row above this one, if it is in bounds
+                if(root.x-1 >= 0 && root.x-1 < this->sizeX){
+                    if(root.y >=0 && root.y < this->sizeY){
+                        if(this->spaceMatrix[root.y][root.x-1] == spaceType){
+                            dirToSpaceType.push_back(mapTools::DIRECTION::WEST);
+                        }
+                    }
+                }
+                break;
+        }//switch
+         
+    }//direction loop
 }
 
+mapTools::Point Map::fillAdjacentSpace(const mapTools::Point &root, const mapTools::DIRECTION &dirToFill){    
+    mapTools::Point toFill = this->moveToAdjacentSpace(root,dirToFill);
+    this->fillSpace(toFill);
+    return toFill;
+}
+    
+mapTools::Point Map::moveConsecutiveSpace(const int numSpace,const mapTools::Point &root, const mapTools::DIRECTION &directionToMove){
+    mapTools::Point returnPoint = root;
+    if(numSpace > 0){
+        for(int i = 0; i < numSpace; i++){
+            returnPoint = moveToAdjacentSpace(returnPoint, directionToMove);
+        }
+    }
+    return returnPoint;
+}
+
+mapTools::Point Map::moveToAdjacentSpace(const mapTools::Point &root, const mapTools::DIRECTION &dirToFill){    
+    mapTools::Point toMove;
+    switch(dirToFill){
+        case mapTools::DIRECTION::NORTH:
+                //Qury the state of the space matrix in the row above this one, if it is in bounds
+            if(root.x >= 0 && root.x < this->sizeX){
+                if(root.y-1 >=0 && root.y-1 < this->sizeY){
+                    toMove.x = root.x;
+                    toMove.y = root.y-1;
+                }
+            }
+            break;
+            
+        case mapTools::DIRECTION::EAST:
+            //Qury the state of the space matrix in the row above this one, if it is in bounds
+            if(root.x+1 >= 0 && root.x+1 < this->sizeX){
+                if(root.y >=0 && root.y < this->sizeY){
+                    toMove.x = root.x+1;
+                    toMove.y = root.y;
+                }
+            }
+            break;
+            
+        case mapTools::DIRECTION::SOUTH:
+            //Qury the state of the space matrix in the row above this one, if it is in bounds
+            if(root.x >= 0 && root.x < this->sizeX){
+                if(root.y+1 >=0 && root.y+1 < this->sizeY){
+                    toMove.x = root.x;
+                    toMove.y = root.y+1;
+                }
+            }
+            break;
+
+        case mapTools::DIRECTION::WEST:
+            //Qury the state of the space matrix in the row above this one, if it is in bounds
+            if(root.x-1 >= 0 && root.x-1 < this->sizeX){
+                if(root.y >=0 && root.y < this->sizeY){
+                    toMove.x = root.x-1;
+                    toMove.y = root.y;
+                }
+            }
+            break;
+    }//switch
+    return toMove;
+}
 
 bool Map::addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin){
 	mapTools::Rect boundingBox;

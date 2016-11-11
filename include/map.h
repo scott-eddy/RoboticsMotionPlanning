@@ -102,6 +102,13 @@ public:
 	 */ 
 	void generate();
 
+private:
+	int sizeX;
+	int sizeY;
+	int maxRoomX;
+	int maxRoomY;
+	std::vector<std::unique_ptr<Room>> roomVector;
+    
     void makeMaze();
 
     /**
@@ -110,11 +117,13 @@ public:
      */
     void growTree(int x, int y);
 
-    std::vector<mapTools::Point> findAdjacentSpace(mapTools::SPACE_TYPE spaceType);
-private:
-	int sizeX;
-	int sizeY;
-	int maxRoomX;
-	int maxRoomY;
-	std::vector<std::unique_ptr<Room>> roomVector;
+    void findAdjacentSpace(const mapTools::Point &root, const mapTools::SPACE_TYPE &spaceType,std::vector<mapTools::DIRECTION> &directionToSpaceType);
+    
+    void findAdjacentSpace(const int numberOfTiles, const mapTools::Point &root, const mapTools::SPACE_TYPE &spaceType,std::vector<mapTools::DIRECTION> &directionToSpaceType);
+
+    mapTools::Point fillAdjacentSpace(const mapTools::Point &root, const mapTools::DIRECTION &directionToFill); 
+    
+    mapTools::Point moveToAdjacentSpace(const mapTools::Point &root, const mapTools::DIRECTION &directionToFill);
+
+    mapTools::Point moveConsecutiveSpace(const int numSpace,const mapTools::Point &root, const mapTools::DIRECTION &directionToFill);
 };

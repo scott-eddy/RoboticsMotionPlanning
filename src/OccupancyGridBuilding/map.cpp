@@ -2,7 +2,6 @@
  * Implementation of the Map class
  */
 #include "map.h"
-#include <random>
 Map::Map() : spaceMatrix(30, std::vector<uint8_t>(30)){
 	this->sizeX = 30; //Default map size
 	this->sizeY = 30; //Default map size
@@ -26,42 +25,45 @@ void Map::generate(){
     const int smallestRoomFreeSpace = 4; // Want rooms to be at least 2 tiles deep
 	int numberOfAttempts = 0;
 	const int maxAttempts = 50; 
-	std::random_device rd; 
-	std::mt19937_64 randomNumGenerator(rd());
-	std::uniform_int_distribution<> roomUniformX(smallestRoomFreeSpace,this->maxRoomX);
+	//TODO move this to a mapTools:: util
+    std::random_device rd; 
+    std::mt19937_64 randomNumGenerator(rd());
+	
+    
+    std::uniform_int_distribution<> roomUniformX(smallestRoomFreeSpace,this->maxRoomX);
 	std::uniform_int_distribution<> roomUniformY(smallestRoomFreeSpace,this->maxRoomY);	
 	std::uniform_int_distribution<> mapUniformX(1,this->sizeX);
 	std::uniform_int_distribution<> mapUniformY(1,this->sizeY);
 	std::tuple<int,int> curRoomFreeSpace;
 	mapTools::Point curRoomOrigin;
    
-	//while(numberOfAttempts <= maxAttempts){
-	//	int xFreeSpace = roomUniformX(randomNumGenerator);
-	//	int yFreeSpace = roomUniformY(randomNumGenerator);
-	//	curRoomFreeSpace = std::tuple<int,int>(xFreeSpace,yFreeSpace);
-	//
-	//	curRoomOrigin.x = mapUniformX(randomNumGenerator);
-	//	curRoomOrigin.y = mapUniformY(randomNumGenerator);
-    //    
-	//	if(this->addRoom(curRoomFreeSpace,curRoomOrigin)){
-    //        roomVector.back()->fill(mapTools::SPACE_TYPE::OCCUPIED);
-    //    }	
-    //    numberOfAttempts++;
-    //}
+	while(numberOfAttempts <= maxAttempts){
+		int xFreeSpace = roomUniformX(randomNumGenerator);
+		int yFreeSpace = roomUniformY(randomNumGenerator);
+		curRoomFreeSpace = std::tuple<int,int>(xFreeSpace,yFreeSpace);
+	
+		curRoomOrigin.x = mapUniformX(randomNumGenerator);
+		curRoomOrigin.y = mapUniformY(randomNumGenerator);
+        
+		if(this->addRoom(curRoomFreeSpace,curRoomOrigin)){
+            roomVector.back()->fill(mapTools::SPACE_TYPE::OCCUPIED);
+        }	
+        numberOfAttempts++;
+    }
     
     this->makeMaze();
 
 }
 
 void Map::makeMaze(){
-    //for(int x = 0; x < this->sizeX; x++){
-    //    for(int y = 0; y < this->sizeY; y++){
-    //        if(this->spaceMatrix[y][x] != mapTools::SPACE_TYPE::OCCUPIED){
-    //            this->growTree(x,y);
-    //        }
-    //    }
-    //} 
-    this->growTree(0,0);
+    for(int x = 0; x < this->sizeX; x+=2){
+        for(int y = 0; y < this->sizeY; y+=2){
+            if(this->spaceMatrix[y][x] != mapTools::SPACE_TYPE::OCCUPIED){
+                this->growTree(x,y);
+            }
+        }
+    } 
+    //this->growTree(0,0);
 }
 
 
@@ -72,19 +74,26 @@ void Map::growTree(int x, int y){
     std::vector<mapTools::DIRECTION> directionsCanTravel;
     mapTools::DIRECTION lastDirTrav = mapTools::DIRECTION::NORTH;
     const int growLength = 2;
+    const int percentageLastDirection = 75; 
+    std::random_device rd; 
+    std::mt19937_64 randomNumGenerator(rd()); 
+    std::uniform_int_distribution<> uniformPercentage(0,100);
     //Quick Check to see if we should fill the space we are at
+    
     this->findAdjacentSpace(growLength,trackedSpace.back(),mapTools::SPACE_TYPE::EMPTY,directionsCanTravel);
     if(directionsCanTravel.size() != 0)
         this->fillSpace(trackedSpace.back());
-    
+   
+
     while(trackedSpace.size() != 0){ 
         //See which direction we can propigate this maze
         directionsCanTravel.clear();
         this->findAdjacentSpace(growLength,trackedSpace.back(),mapTools::SPACE_TYPE::EMPTY,directionsCanTravel);
 
         if(directionsCanTravel.size() != 0){
-            //Prefer to travel in the same direction as before
-            if(std::find(directionsCanTravel.begin(), directionsCanTravel.end(), lastDirTrav) != directionsCanTravel.end()) {
+            //75% of the time prefer to travel the direction you were going before
+            int chance = uniformPercentage(randomNumGenerator); 
+            if(chance <= percentageLastDirection && std::find(directionsCanTravel.begin(), directionsCanTravel.end(), lastDirTrav) != directionsCanTravel.end()) {
                 //We can again travel in the same direction
                 //Fill the adjacent space and then move the appropriate lengh
                 this->fillAdjacentSpace(trackedSpace.back(),lastDirTrav);
@@ -100,7 +109,6 @@ void Map::growTree(int x, int y){
             trackedSpace.pop_back();
             //TODO reset last direction traveled?
         }
-
     }
 }
 

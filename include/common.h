@@ -1,6 +1,10 @@
+/**
+ * @file common.h
+ * @brief A common set of utilities that are used to generate a map
+ */
 
 #pragma once
-
+#include <random>
 namespace mapTools{
 	struct Point{
 		int x;
@@ -35,4 +39,5 @@ namespace mapTools{
         WEST,
         LAST
     };
+
 }

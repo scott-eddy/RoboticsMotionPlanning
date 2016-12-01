@@ -5,8 +5,8 @@
 #include "rectangle_room.h"
 #include <iostream>
 int main(){
-	int maxX = 5;
-	int maxY = 5;
+	int maxX = 101;
+	int maxY = 101;
 	Map myMap(maxX,maxY);
 	myMap.generate();
 	/*

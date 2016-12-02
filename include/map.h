@@ -109,6 +109,9 @@ private:
 	int maxRoomY;
 	std::vector<std::unique_ptr<Room>> roomVector;
     
+    /**
+     * @brief loops through spaceMatrix and fills space acording to a growing tree algorithm
+     */
     void makeMaze();
 
     /**
@@ -117,13 +120,29 @@ private:
      */
     void growTree(int x, int y);
 
+    /**
+     * @brief returns the directions to mapTools::SPACE_TYPE from the root point.  Example: if you are at (0,0) and the space at (0,1) is of type SPACE_TYPE
+     *        the function will return EAST
+     */
     void findAdjacentSpace(const mapTools::Point &root, const mapTools::SPACE_TYPE &spaceType,std::vector<mapTools::DIRECTION> &directionToSpaceType);
     
+    /**
+     * @brief same as it's base implementation but requires numberOfTiles of free space in order to return a direction.
+     */
     void findAdjacentSpace(const int numberOfTiles, const mapTools::Point &root, const mapTools::SPACE_TYPE &spaceType,std::vector<mapTools::DIRECTION> &directionToSpaceType);
 
+    /**
+     * @brief fills the space in the direction specified by directionToFill away from the root point.
+     */
     mapTools::Point fillAdjacentSpace(const mapTools::Point &root, const mapTools::DIRECTION &directionToFill); 
-    
+   
+    /**
+     * @brief returns the point in the direction specified by directionToFill from the root point
+     */ 
     mapTools::Point moveToAdjacentSpace(const mapTools::Point &root, const mapTools::DIRECTION &directionToFill);
 
+    /**
+     * @briefs move some amount of space in a single direction away from the root point.
+     */
     mapTools::Point moveConsecutiveSpace(const int numSpace,const mapTools::Point &root, const mapTools::DIRECTION &directionToFill);
 };

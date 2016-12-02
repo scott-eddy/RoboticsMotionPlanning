@@ -29,3 +29,16 @@ add_library(map_lib ${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/map.cp
 add_executable(map_generation ${CMAKE_CURRENT_SOURCE_DIR}/src/map_generation.cpp)
 
 target_link_libraries(map_generation map_lib)
+#------------------------------------------------------------------#
+
+set(MAKE_ANIMATION TRUE)
+
+if(MAKE_ANIMATION)
+    find_package(OpenCV REQUIRED)
+    
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/AnimationToolkit)
+    add_executable(opencvTest ${CMAKE_CURRENT_SOURCE_DIR}/src/AnimationToolkit/opencvDemo.cpp)
+    target_link_libraries( opencvTest ${OpenCV_LIBS} )
+
+endif()
+

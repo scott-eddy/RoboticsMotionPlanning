@@ -14,6 +14,7 @@
 #include "map_tools_common.h"
 #include "room.h"
 #include "rectangle_room.h"
+#include "VectorSpaceRepresentation.h"
 
 //Forward declaration of room
 class Room;
@@ -43,7 +44,9 @@ public:
 	//! Represent a matrix as a vector of vectors.  
 	//! Could be done with template matrix class ala Eigen
         //! mutable such that it can be altered from the const functions
-	mutable std::vector<std::vector<uint8_t> > spaceMatrix;
+	//mutable std::vector<std::vector<uint8_t> > spaceMatrix;
+        mutable std::unique_ptr<VectorSpaceRepresentation> spaceMatrix;
+
 
 	/**
  	* @brief Prints the map as ASCII 

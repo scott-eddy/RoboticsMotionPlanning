@@ -5,18 +5,22 @@
  */
 #include "map.h"
 #include <algorithm> //std::find
-Map::Map() : spaceMatrix(30, std::vector<uint8_t>(30)){
+Map::Map(){
 	this->sizeX = 30; //Default map size
 	this->sizeY = 30; //Default map size
-	//Rooms should take up less than twenty percent of the maze
+	this->spaceMatrix = std::unique_ptr<VectorSpaceRepresentation>(new VectorSpaceRepresentation(this->sizeX, this->sizeY));
+
+        //Rooms should take up less than twenty percent of the maze
 	this->maxRoomX = (0.2*this->sizeX); 
 	this->maxRoomY = (0.2*this->sizeY);
 }
 
-Map::Map(int sizeX, int sizeY) : spaceMatrix(sizeY, std::vector<uint8_t>(sizeX)){
+Map::Map(int sizeX, int sizeY){
 	this->sizeX = sizeX;
 	this->sizeY = sizeY;
-	this->maxRoomX = (0.2*this->sizeX); 
+        this->spaceMatrix = std::unique_ptr<VectorSpaceRepresentation>(new VectorSpaceRepresentation(this->sizeX, this->sizeY));
+
+        this->maxRoomX = (0.2*this->sizeX); 
 	this->maxRoomY = (0.2*this->sizeY);
 }
 

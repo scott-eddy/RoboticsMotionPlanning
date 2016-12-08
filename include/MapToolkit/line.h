@@ -1,6 +1,8 @@
+//TODO this could be a generally useful class
+
 #pragma once
 #include <vector>
-#include "common.h"
+#include "map_tools_common.h"
 #include <cmath>
 
 class Line{

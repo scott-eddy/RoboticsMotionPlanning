@@ -1,6 +1,7 @@
+//TODO this could be a useful class when building rooms
 
 #pragma once
-#include "common.h"
+#include "map_tools_common.h"
 class Wall{
 public:
 	Wall();

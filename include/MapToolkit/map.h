@@ -1,13 +1,17 @@
 /**
- * This is a class that defines a map.  A map is composed of 
- * free space and occupied space a-la an occupancy grid
+ * @file map.h
+ * @author Eddy Scott
+ * @brief This is a class that defines a map.  
  *
+ * A map is composed of free space and occupied space a-la an occupancy grid.  This data
+ * is housed in the spaceMatrix 
 */
 
 #pragma once
 #include <vector>
 #include <iostream>
-#include "common.h"
+#include <memory>
+#include "map_tools_common.h"
 #include "room.h"
 #include "rectangle_room.h"
 
@@ -38,7 +42,7 @@ public:
 
 	//! Represent a matrix as a vector of vectors.  
 	//! Could be done with template matrix class ala Eigen
-    //! mutable such that it can be altered from the const functions
+        //! mutable such that it can be altered from the const functions
 	mutable std::vector<std::vector<uint8_t> > spaceMatrix;
 
 	/**
@@ -57,10 +61,16 @@ public:
 	 * @brief initializes a room and stores a pointer of it
 	 * @details Not typically needed, as all information for each room is stored
 	 *          in the space matrix of this class.  However, in the future having access
-	 *          to rooms might be handy
-	 * 
-	 * @param 
-	 * @param origin [description]
+	 *          to rooms might be handy.
+         *          
+         *          A room is thusly specified as: 
+         *          right most wall: origin.x + (std::get<0>(freeSpace))/2
+	 *          left most wall: origin.x - (std::get<0>(freeSpace))/2
+         *
+         *          top most wall: origin.y - (std::get<1>(freeSpace))/2 [Note the use of the minus since 0 index is at top of space matrix]
+         *          bottom most wall: origin.y + (std::get<1>(freeSpace))/2 
+	 * @param freeSpace a pair of numbers representing the x and y free space of the room 
+	 * @param origin the x,y location of the rooms origin
 	 */
 	bool addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin);
 
@@ -71,7 +81,10 @@ public:
 	void fillSpace(std::vector<mapTools::Point> pointsToFill) const;
 
 
-    void fillSpace(mapTools::Point pointToFill) const;
+        /**
+         * @brief Fills the point in the map's space matrix by setting the x,y locations to mapTools::SPACE_TYPE::OCCUPIED
+         */
+        void fillSpace(mapTools::Point pointToFill) const;
 
 	/**
 	 * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to mapTools::SPACE_TYPE::EMPTY 
@@ -79,7 +92,7 @@ public:
 	 */
 	void emptySpace(std::vector<mapTools::Point> pointsToFill) const;
 	
-    /** 
+        /** 
 	 * @brief Prints the numerical representation of the Map's space matrix
 	 *
 	 */

@@ -1,7 +1,10 @@
 /**
- * Implementation of the Map class
+ * @file map.cpp
+ * @author Eddy Scott
+ * @brief Implementation of the Map class
  */
 #include "map.h"
+#include <algorithm> //std::find
 Map::Map() : spaceMatrix(30, std::vector<uint8_t>(30)){
 	this->sizeX = 30; //Default map size
 	this->sizeY = 30; //Default map size

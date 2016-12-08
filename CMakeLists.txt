@@ -18,20 +18,20 @@ else()
         message(ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 #------------------------------------------------------------------#
-
-#Add the "include" directory to the project
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+# Build the mapping toolkit library
+# Add the "include" directory to the project
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/MapToolkit)
 
 add_library(map_lib ${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/map.cpp
 					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/rectangle_room.cpp
-					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/line.cpp)
-
+					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/line.cpp
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/VectorSpaceRepresentation.cpp)
 add_executable(map_generation ${CMAKE_CURRENT_SOURCE_DIR}/src/map_generation.cpp)
 
 target_link_libraries(map_generation map_lib)
 #------------------------------------------------------------------#
-
-set(MAKE_ANIMATION TRUE)
+# For better visualization of data build the animation toolkit library
+set(MAKE_ANIMATION FALSE)
 
 if(MAKE_ANIMATION)
     find_package(OpenCV REQUIRED)

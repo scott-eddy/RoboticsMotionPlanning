@@ -12,7 +12,7 @@ spaceMatrix(xFreeSpace,std::vector<mapTools::SPACE_TYPE>(yFreeSpace))
 {
 }
 
-mapTools::SPACE_TYPE VectorSpaceRepresentation::operator()(int x, int y){
+mapTools::SPACE_TYPE& VectorSpaceRepresentation::operator()(int x, int y){
     /**
      * Ensure that the values we're trying to access are valid.  Note user's operate
      * in X,Y space which maps as follows:
@@ -26,8 +26,16 @@ mapTools::SPACE_TYPE VectorSpaceRepresentation::operator()(int x, int y){
     {
         return this->spaceMatrix[y][x];
     }else{
-        //TODO we should allow resizing of the map here but for now just return invlaid
-        return mapTools::SPACE_TYPE::INVALID;
+        //TODO we should allow resizing of the map here
+        //since we need to return a reference we return the reference to this class's invlaid type
+        //HOWEVER, this means that a user could overwrite the invalid type since the return is not
+        //const.  TODO fix this
+        return this->_invalid_space;
     }
 
+}
+
+
+std::vector<mapTools::SPACE_TYPE> VectorSpaceRepresentation::row(int rowNum){
+    return this->spaceMatrix[rowNum];
 }

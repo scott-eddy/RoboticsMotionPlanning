@@ -65,7 +65,7 @@ void Map::generate(){
 void Map::makeMaze(){
     for(int x = 0; x < this->sizeX; x+=2){
         for(int y = 0; y < this->sizeY; y+=2){
-            if(this->spaceMatrix[y][x] != mapTools::SPACE_TYPE::OCCUPIED){
+            if((*spaceMatrix)(x,y) != mapTools::SPACE_TYPE::OCCUPIED){
                 this->growTree(x,y);
             }
         }
@@ -159,7 +159,7 @@ void Map::findAdjacentSpace(const mapTools::Point &root, const mapTools::SPACE_T
                 //Qury the state of the space matrix in the row above this one, if it is in bounds
                 if(root.x >= 0 && root.x < this->sizeX){
                     if(root.y-1 >=0 && root.y-1 < this->sizeY){
-                        if(this->spaceMatrix[root.y-1][root.x] == spaceType){
+                        if((*spaceMatrix)(root.x,root.y-1) == spaceType){
                             dirToSpaceType.push_back(mapTools::DIRECTION::NORTH);
                         }
                     }
@@ -170,7 +170,7 @@ void Map::findAdjacentSpace(const mapTools::Point &root, const mapTools::SPACE_T
                 //Qury the state of the space matrix in the row above this one, if it is in bounds
                 if(root.x+1 >= 0 && root.x+1 < this->sizeX){
                     if(root.y >=0 && root.y < this->sizeY){
-                        if(this->spaceMatrix[root.y][root.x+1] == spaceType){
+                        if((*spaceMatrix)(root.x+1,root.y) == spaceType){
                             dirToSpaceType.push_back(mapTools::DIRECTION::EAST);
                         }
                     }
@@ -181,7 +181,7 @@ void Map::findAdjacentSpace(const mapTools::Point &root, const mapTools::SPACE_T
                 //Qury the state of the space matrix in the row above this one, if it is in bounds
                 if(root.x >= 0 && root.x < this->sizeX){
                     if(root.y+1 >=0 && root.y+1 < this->sizeY){
-                        if(this->spaceMatrix[root.y+1][root.x] == spaceType){
+                        if((*spaceMatrix)(root.x,root.y+1) == spaceType){
                             dirToSpaceType.push_back(mapTools::DIRECTION::SOUTH);
                         }
                     }
@@ -192,7 +192,7 @@ void Map::findAdjacentSpace(const mapTools::Point &root, const mapTools::SPACE_T
                 //Qury the state of the space matrix in the row above this one, if it is in bounds
                 if(root.x-1 >= 0 && root.x-1 < this->sizeX){
                     if(root.y >=0 && root.y < this->sizeY){
-                        if(this->spaceMatrix[root.y][root.x-1] == spaceType){
+                        if((*spaceMatrix)(root.x-1,root.y) == spaceType){
                             dirToSpaceType.push_back(mapTools::DIRECTION::WEST);
                         }
                     }
@@ -334,7 +334,7 @@ void Map::fillSpace(std::vector<mapTools::Point> pointsToFill) const{
         //std::cout << "Max X,Y     :" << sizeX << "," << sizeY << std::endl;
 
 		//N.B. y represents the row you are in and x represents the column
-	    spaceMatrix[currentPoint.y][currentPoint.x] = mapTools::SPACE_TYPE::OCCUPIED;
+	    (*spaceMatrix)(currentPoint.x,currentPoint.y) = mapTools::SPACE_TYPE::OCCUPIED;
         
     }
 }
@@ -356,7 +356,7 @@ void Map::fillSpace(mapTools::Point pointToFill) const{
     //std::cout << "Filling X,Y :" << currentPoint.x << "," << currentPoint.y << std::endl;
     //std::cout << "Max X,Y     :" << sizeX << "," << sizeY << std::endl;
 	//N.B. y represents the row you are in and x represents the column
-    spaceMatrix[pointToFill.y][pointToFill.x] = mapTools::SPACE_TYPE::OCCUPIED;
+    (*spaceMatrix)(pointToFill.x,pointToFill.y) = mapTools::SPACE_TYPE::OCCUPIED;
 }
 
 void Map::emptySpace(std::vector<mapTools::Point> pointsToFill) const{
@@ -380,33 +380,36 @@ void Map::emptySpace(std::vector<mapTools::Point> pointsToFill) const{
         //std::cout << "Max X,Y     :" << sizeX << "," << sizeY << std::endl;
 
 		//N.B. y represents the row you are in and x represents the column
-	    spaceMatrix[currentPoint.y][currentPoint.x] = mapTools::SPACE_TYPE::EMPTY; 
+	   (*spaceMatrix)(currentPoint.x, currentPoint.y) = mapTools::SPACE_TYPE::EMPTY; 
     }
 }
 
 void Map::printMatrix(){
+    /*
 for(auto const& rowVect : spaceMatrix){
-		//rowVect is a reference to the spaceMatrix vector
+    //rowVect is a reference to the spaceMatrix vector
 		for(auto const& matrixValue : rowVect){
 			std::cout << static_cast<int>(matrixValue) << ",";
 		}
 		std::cout << std::endl;
 	}
+        */
 }
+
 
 
 std::ostream& operator<<(std::ostream &os,Map const &mapObj){
 /**
 	 * Print a row of "-"" at the top of the map
 	 */
-	for(auto const& i : mapObj.spaceMatrix[0]){
+	for(auto const& i : mapObj.spaceMatrix->row(0)){
 		os << "-";
 	}
 	// Add an additional 2 "-" for the borders of the map
 	os << "-" << "-" << std::endl;
 	
-	
-	for(auto const& i : mapObj.spaceMatrix){
+        /*//TODO need begin() and end() methods of VectorSpaceRepresentation	
+	for(auto const& i : mapObj->spaceMatrix){
 		//i is a reference to the spaceMatrix vector
 		os << "|";
 		for(auto const& j : i){
@@ -423,13 +426,13 @@ std::ostream& operator<<(std::ostream &os,Map const &mapObj){
 			}
 		}
 		os << std::endl;
-	}
+	}*/
 	
 	
 	/**
 	 * Print a row of -- at the bottom of the map
 	 */
-	for(auto col : mapObj.spaceMatrix[0]){
+	for(auto col : mapObj.spaceMatrix->row(0)){
 		os << "-";
 	}
 	// Add an additional 2 "-" for the borders of the map

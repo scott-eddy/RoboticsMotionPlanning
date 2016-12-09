@@ -22,7 +22,7 @@ public:
     /**
      * Returns a vector of the row specified by rowNumber (zero indexed).
      */
-    //std::vector<mapTools::SPACE_TYPE> row(int rowNumber);
+    std::vector<mapTools::SPACE_TYPE> row(int rowNumber);
 
     /**
      * Returns a vector of the column spefified by colNumber (zero indexed).
@@ -39,10 +39,16 @@ public:
      */
     //int * end();
 
+        
+    mapTools::SPACE_TYPE& operator()(int x, int y);
+
+
     /**
-     * The way we will access the data
+     * This is a hack around returning a reference with operator().  Needs to be 
+     * thought out more.  See TODO in cpp file
      */
-    mapTools::SPACE_TYPE operator()(int x, int y);
+    mapTools::SPACE_TYPE _invalid_space = mapTools::SPACE_TYPE::INVALID;
+
 private:
 
     /**

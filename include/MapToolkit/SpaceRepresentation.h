@@ -19,6 +19,6 @@ public:
      * This is how users access the data in the SpaceRepresentation.  Note that
      * operator[] was not overloaded as this adds a fair amount of complexity
      */ 
-    virtual mapTools::SPACE_TYPE operator()(int x, int y) = 0;
+    virtual mapTools::SPACE_TYPE& operator()(int x, int y) = 0;
 
 };

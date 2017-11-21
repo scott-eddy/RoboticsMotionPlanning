@@ -14,87 +14,90 @@
 //Forward declaration of room
 class Room;
 
-class Map{
-public:
-	/**
-	 * @brief Default constructor
-	 * @details makes a map of default size [30x30]
-	 */
-	Map();
+class Map {
+ public:
+  /**
+   * @brief Default constructor
+   * @details makes a map of default size [30x30]
+   */
+  Map();
 
-	/**
-	 * @brief Constructor of th map
-	 * @details Generates the matrix of free and occupied space
-	 * 
-	 * @param sizeX the maximum size of the map in the x direction
-	 * @param sizeY the maximum size of the map in the y direction
-	 */
-	Map(int sizeX, int sizeY);
+  /**
+   * @brief Constructor of th map
+   * @details Generates the matrix of free and occupied space
+   *
+   * @param sizeX the maximum size of the map in the x direction
+   * @param sizeY the maximum size of the map in the y direction
+   */
+  Map(int sizeX, int sizeY);
 
-	/**
-	 * @brief Destructor of map
-	 */
-	~Map();
+  /**
+   * @brief Destructor of map
+   */
+  ~Map();
 
-	//! Represent a matrix as a vector of vectors.  
-	//! Could be done with template matrix class ala Eigen
-	mutable std::vector<std::vector<uint8_t> > spaceMatrix;
+  //! Represent a matrix as a vector of vectors.
+  //! Could be done with template matrix class ala Eigen
+  mutable std::vector<std::vector<uint8_t>> spaceMatrix;
 
-	/**
- 	* @brief Prints the map as ASCII 
- 	* @details Prints a representation of the map with free space
- 	*          printed as " " and occupied space printed with "*"
- 	*          The map is bordered with "-" at top and bottom and "|"
- 	*          on either side
- 	* 
- 	* @param os ostream to be printed to 
- 	* @param mapObj map object to be printed out
- 	*/
-	friend std::ostream &operator<<(std::ostream &os,const Map &mapObj);
+  /**
+   * @brief Prints the map as ASCII
+   * @details Prints a representation of the map with free space
+   *          printed as " " and occupied space printed with "*"
+   *          The map is bordered with "-" at top and bottom and "|"
+   *          on either side
+   *
+   * @param os ostream to be printed to
+   * @param mapObj map object to be printed out
+   */
+  friend std::ostream &operator<<(std::ostream &os, const Map &mapObj);
 
-	/**
-	 * @brief initializes a room and stores a pointer of it
-	 * @details Not typically needed, as all information for each room is stored
-	 *          in the space matrix of this class.  However, in the future having access
-	 *          to rooms might be handy
-	 * 
-	 * @param 
-	 * @param origin [description]
-	 */
-	void addRoom(std::tuple<int,int> freeSpace, mapTools::Point origin);
+  /**
+   * @brief initializes a room and stores a pointer of it
+   *
+   * @param
+   * @param origin [description]
+   */
+  void addRoom(std::tuple<int, int> freeSpace, mapTools::Point origin);
 
-	/**
-	 * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to one
-	 *
-	 */
-	void fillSpace(std::vector<mapTools::Point> pointsToFill) const;
+  /**
+   * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to one
+   *
+   */
+  void fillSpace(std::vector<mapTools::Point> pointsToFill) const;
 
-	/** 
-	 * @brief Prints the numerical representation of the Map's space matrix
-	 *
-	 */
-	void printMatrix();
+  /**
+   * @brief Populates a map with rooms and passageways
+   * TODO move this functionality to a factory class
+   */
+  void generate();
+ private:
+  int sizeX;
+  int sizeY;
+  int maxRoomX;
+  int maxRoomY;
+  std::vector<std::unique_ptr<Room>> roomVector;
 
-	/**
-	 * @brief returns true if two rooms in the map intersect one another
-	 */
-	bool roomIntersection(const mapTools::Rect &potentialRoom);
+  /**
+   * @brief Prints the numerical representation of the Map's space matrix
+   *
+   */
+  void printMatrix();
 
-	/**
-	 * @brief Fills space inside of a room
-	 *
-	 */
-	void addClutterToRoom(int roomNum);
-	
-	/**
-	 * @brief Populates a map with rooms and passageways
-	 * TODO move this functionality to a factory class
-	 */ 
-	void generate();
-private:
-	int sizeX;
-	int sizeY;
-	int maxRoomX;
-	int maxRoomY;
-	std::vector<std::unique_ptr<Room>> roomVector;
+  /**
+   * @brief returns true if two rooms in the map intersect one another
+   */
+  bool roomIntersection(const mapTools::Rect &potentialRoom);
+
+  /**
+   * @brief Fills space inside of a room
+   *
+   */
+  void addClutterToRoom(int roomNum);
+
+  /**
+   *
+   * @return true if upperleft and lowerright of potential Room is capped to [(0,0), (sizeX, sizeY)]
+   */
+  bool BoundingBoxWithinMap(const mapTools::Rect &potentialRoom);
 };

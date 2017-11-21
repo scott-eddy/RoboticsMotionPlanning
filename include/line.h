@@ -3,13 +3,13 @@
 #include "common.h"
 #include <cmath>
 
-class Line{
-public:
-	Line(std::vector<mapTools::Point> pointsToConnect);
-	~Line();
-	std::vector<mapTools::Point> getPointsOnLine() const;
+class Line {
+ public:
+  Line(std::vector<mapTools::Point> pointsToConnect);
+  ~Line();
+  std::vector<mapTools::Point> getPointsOnLine() const;
 
-private:
-	std::vector<mapTools::Point> pointsOnLine;
-	void findPointsOnLine(std::vector<mapTools::Point> pointsToConnect);
+ private:
+  std::vector<mapTools::Point> pointsOnLine;
+  void findPointsOnLine(std::vector<mapTools::Point> pointsToConnect);
 };

@@ -1,6 +1,10 @@
-#Ignore file used to specify what files/directories not to version under git
+# Ignore file used to specify what files/directories not to version under git
 .DS_Store
 build
 *.o
 *.bin
 *.swp
+
+# Ignore CLion files
+.idea/
+cmake-build-debug/

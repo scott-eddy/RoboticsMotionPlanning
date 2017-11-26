@@ -1,27 +1,24 @@
-/*
-
-----------------------------------------
-*/
-
 #pragma once
 #include "room.h"
 #include <cmath>
 #include "line.h"
+
 /**
- * @brief Abstract class defining what makes up a Room in a map
- * @details [long description]
- * 
+ * \brief A class representing a room that is in the shape of a triangle
  */
 class RectangleRoom : public Room {
  public:
-  RectangleRoom(int xFreeSpace, int yFreeSpace, const mapTools::Point &origin, const Map &parentMap);
-  ~RectangleRoom();
-  mapTools::Rect getBoundingBox();
-  void addClutter();
+  RectangleRoom(int xFreeSpace, int yFreeSpace, const map_tools::geometry::Point2D &origin);
+
+  ~RectangleRoom() = default;
+
+  map_tools::geometry::Rectangle GetBoundingBox() override;
+
+  void AddClutter() override;
 
  private:
-  void populateMap();
-  mapTools::Point upperLeft;
-  mapTools::Point lowerRight;
+  void PopulateMap() override;
+  map_tools::geometry::Point2D upper_left_;
+  map_tools::geometry::Point2D lower_right_;
 
 };

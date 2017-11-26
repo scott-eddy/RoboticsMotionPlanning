@@ -1,11 +1,11 @@
 
 #pragma once
-#include "common.h"
+#include "map_tools_geometry.h"
 class Wall {
  public:
   Wall();
   ~Wall();
 
-  mapTools::Point startPoint;
-  mapTools::Point endPoint;
+  map_tools::geometry::Point2D startPoint;
+  map_tools::geometry::Point2D endPoint;
 };

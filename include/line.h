@@ -1,15 +1,15 @@
 #pragma once
 #include <vector>
-#include "common.h"
+#include "map_tools_geometry.h"
 #include <cmath>
 
 class Line {
  public:
-  Line(std::vector<mapTools::Point> pointsToConnect);
+  Line(std::vector<map_tools::geometry::Point2D> pointsToConnect);
   ~Line();
-  std::vector<mapTools::Point> getPointsOnLine() const;
+  std::vector<map_tools::geometry::Point2D> getPointsOnLine() const;
 
  private:
-  std::vector<mapTools::Point> pointsOnLine;
-  void findPointsOnLine(std::vector<mapTools::Point> pointsToConnect);
+  std::vector<map_tools::geometry::Point2D> pointsOnLine;
+  void findPointsOnLine(std::vector<map_tools::geometry::Point2D> pointsToConnect);
 };

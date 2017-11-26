@@ -1,7 +1,7 @@
 # This is a robotic motion planning package written in modern C++ with a focus on OO degin principles. 
 The purpose of this package is to provide:
 
-1. A method in which to generate random maps for which a robot will plan traversal
+1. A method in which to GenerateMap random maps for which a robot will plan traversal
 2. Several algorithms implementations to traverse the maps given above
 
 ## Why use this package over other implementations

@@ -9,7 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #Add the "include" directory to the project
 add_library(map_lib ${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/map.cpp
 					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/rectangle_room.cpp
-					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/line.cpp)
+					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/line.cpp
+        			${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/space_representation_2D.cpp
+					)
 target_include_directories(map_lib
         BEFORE
 		PUBLIC

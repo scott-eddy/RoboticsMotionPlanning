@@ -46,7 +46,7 @@ void RectangleRoom::PopulateMap() {
 
   // TODO propogate this info back up
   //for (auto const &currentLine : roomBorder) {
-  //  parentMap.FillSpace(currentLine.getPointsOnLine());
+  //  parentMap.FillSpace(currentLine.GetPointsOnLine());
   //}
 }
 

@@ -3,7 +3,7 @@
  */
 #include "map.h"
 #include <random>
-Map::Map() : space_matrix_(30, std::vector<uint8_t>(30)) {
+Map::Map() : space_matrix_(30, 30) {
   this->size_x_ = 30; //Default map size
   this->size_y_ = 30; //Default map size
   //Rooms should take up less than twenty percent of the maze
@@ -11,7 +11,7 @@ Map::Map() : space_matrix_(30, std::vector<uint8_t>(30)) {
   this->max_room_size_y_ = (0.2 * this->size_y_);
 }
 
-Map::Map(int max_space_x, int max_space_y) : space_matrix_(max_space_y, std::vector<uint8_t>(max_space_x)) {
+Map::Map(int max_space_x, int max_space_y) : space_matrix_(max_space_x, max_space_y) {
   this->size_x_ = max_space_x;
   this->size_y_ = max_space_y;
   this->max_room_size_x_ = (0.2 * this->size_x_);
@@ -102,11 +102,11 @@ bool Map::BoundingBoxIntersection(const map_tools::geometry::Rectangle &potentia
   return anyIntersection;
 }
 
-void Map::FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill) const {
+void Map::FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill) {
   for (auto const &currentPoint : points_to_fill) {
     if (currentPoint.y < size_y_ && currentPoint.x < size_x_) {
       //N.B. y represents the row you are in and x represents the column
-      space_matrix_[currentPoint.y][currentPoint.x] = 1;
+      space_matrix_(currentPoint.x, currentPoint.y) = SpaceRepresentation2D::SpaceType::Occupied;
     } else {
       std::cout << "Doh!" << std::endl;
       //TODO: throw some error here?
@@ -114,53 +114,43 @@ void Map::FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill) co
   }
 }
 
-void Map::PrintMatrix() {
-  for (auto const &rowVect : space_matrix_) {
-    //rowVect is a reference to the space_matrix_ vector
-    for (auto const &matrixValue : rowVect) {
-      std::cout << static_cast<int>(matrixValue) << ",";
-    }
-    std::cout << std::endl;
-  }
-}
-
 std::ostream &operator<<(std::ostream &os, Map const &map_instance) {
-/**
-	 * Print a row of "-"" at the top of the map
-	 */
-  for (auto const &i : map_instance.space_matrix_[0]) {
-    os << "-";
-  }
-  // Add an additional 2 "-" for the borders of the map
-  os << "-" << "-" << std::endl;
-
-  for (auto const &i : map_instance.space_matrix_) {
-    //i is a reference to the space_matrix_ vector
-    os << "|";
-    for (auto const &j : i) {
-      //j is the value in the
-      if (j == 0) {
-        os << " ";
-      } else if (j == 1) {
-        os << "*";
-      }
-
-      //! check if j is at the end of the current vector.
-      if (&j == &i.back()) {
-        os << "|";
-      }
-    }
-    os << std::endl;
-  }
-
-
-  /**
-   * Print a row of -- at the bottom of the map
-   */
-  for (auto col : map_instance.space_matrix_[0]) {
-    os << "-";
-  }
-  // Add an additional 2 "-" for the borders of the map
-  os << "-" << "-" << std::endl;
+//  /**
+//	 * Print a row of "-"" at the top of the map
+//	 */
+//  for (auto const &i : map_instance.space_matrix_[0]) {
+//    os << "-";
+//  }
+//   Add an additional 2 "-" for the borders of the map
+//  os << "-" << "-" << std::endl;
+//
+//  for (auto const &i : map_instance.space_matrix_) {
+//    i is a reference to the space_matrix_ vector
+//    os << "|";
+//    for (auto const &j : i) {
+//      j is the value in the
+//      if (j == 0) {
+//        os << " ";
+//      } else if (j == 1) {
+//        os << "*";
+//      }
+//
+//      ! check if j is at the end of the current vector.
+//      if (&j == &i.back()) {
+//        os << "|";
+//      }
+//    }
+//    os << std::endl;
+//  }
+//
+//
+//  /**
+//   * Print a row of -- at the bottom of the map
+//   */
+//  for (auto col : map_instance.space_matrix_[0]) {
+//    os << "-";
+//  }
+//   Add an additional 2 "-" for the borders of the map
+//  os << "-" << "-" << std::endl;
   return os;
 }

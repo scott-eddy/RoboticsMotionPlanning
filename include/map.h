@@ -10,9 +10,8 @@
 #include "map_tools_geometry.h"
 #include "room.h"
 #include "rectangle_room.h"
+#include "space_representation_2D.h"
 
-//Forward declaration of room
-class Room;
 
 class Map {
  public:
@@ -38,7 +37,7 @@ class Map {
 
   //! Represent a matrix as a vector of vectors.
   //! Could be done with template matrix class ala Eigen
-  mutable std::vector<std::vector<uint8_t>> space_matrix_;
+  SpaceRepresentation2D space_matrix_;
 
   /**
    * @brief Prints the map as ASCII
@@ -63,7 +62,7 @@ class Map {
    * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to one
    *
    */
-  void FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill) const;
+  void FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill);
 
   /**
    * @brief Populates a map with rooms and passageways

@@ -5,11 +5,11 @@
 
 class Line {
  public:
-  Line(std::vector<map_tools::geometry::Point2D> pointsToConnect);
-  ~Line();
-  std::vector<map_tools::geometry::Point2D> getPointsOnLine() const;
+  Line(std::vector<map_tools::geometry::Point2D> points_to_connect);
+  ~Line() = default;
+  std::vector<map_tools::geometry::Point2D> GetPointsOnLine() const;
 
  private:
-  std::vector<map_tools::geometry::Point2D> pointsOnLine;
-  void findPointsOnLine(std::vector<map_tools::geometry::Point2D> pointsToConnect);
+  std::vector<map_tools::geometry::Point2D> points_on_line_;
+  void FindPointsOnLine(std::vector<map_tools::geometry::Point2D> points_to_connect);
 };

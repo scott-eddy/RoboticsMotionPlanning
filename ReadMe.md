@@ -1,8 +1,10 @@
-# This is a robotic motion planning package written in modern C++ with a focus on OO degin principles. 
+# This is a robotic motion planning package written in modern C++ with a focus on OO design principles. 
 The purpose of this package is to provide:
 
-1. A method in which to GenerateMap random maps for which a robot will plan traversal
-2. Several algorithms implementations to traverse the maps given above
+1. A method that generates random maps that a simulated robot will plan to traverse 
+2. Several path planning algorithm implementations 
 
 ## Why use this package over other implementations
-This package is a work-in-progress and not meant to be a drop-in solution to robotic motion planning. Currently the capabilities offered by this package are **far** exceeded by those [commonly availible and heavily used](http://wiki.ros.org/navigation).  It is not the Author's intent to have this be a general purpose solution to robotic motion planning.    
+###Don't!
+
+This package is a work-in-progress and not meant to be a solution to robotic motion planning in general. Currently the capabilities offered by this package are **far** exceeded by those [commonly availible and heavily used](http://wiki.ros.org/navigation).  

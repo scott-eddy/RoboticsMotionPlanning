@@ -1,37 +1,36 @@
 
 #include "line.h"
-Line::Line(std::vector<mapTools::Point> pointsToConnect) : pointsOnLine(0) {
-  this->findPointsOnLine(pointsToConnect);
-}
-Line::~Line() {}
-
-std::vector<mapTools::Point> Line::getPointsOnLine() const {
-  return this->pointsOnLine;
+Line::Line(std::vector<map_tools::geometry::Point2D> points_to_connect) : points_on_line_(0) {
+  this->FindPointsOnLine(points_to_connect);
 }
 
-void Line::findPointsOnLine(std::vector<mapTools::Point> pointsToConnect) {
-  pointsOnLine.clear();
-  if (pointsToConnect[0].y == pointsToConnect[1].y) {
+std::vector<map_tools::geometry::Point2D> Line::GetPointsOnLine() const {
+  return this->points_on_line_;
+}
+
+void Line::FindPointsOnLine(std::vector<map_tools::geometry::Point2D> points_to_connect) {
+  points_on_line_.clear();
+  if (points_to_connect[0].y == points_to_connect[1].y) {
     //Horizontal line
-    int difference = pointsToConnect[0].x - pointsToConnect[1].x;
+    int difference = points_to_connect[0].x - points_to_connect[1].x;
     int numToFill = std::fabs(difference);
-    int xStartLocation = std::min(pointsToConnect[0].x, pointsToConnect[1].x);
+    int xStartLocation = std::min(points_to_connect[0].x, points_to_connect[1].x);
     for (int i = xStartLocation; i <= xStartLocation + numToFill; i++) {
-      mapTools::Point currentPoint;
-      currentPoint.y = pointsToConnect[0].y;
+      map_tools::geometry::Point2D currentPoint;
+      currentPoint.y = points_to_connect[0].y;
       currentPoint.x = i;
-      pointsOnLine.push_back(currentPoint);
+      points_on_line_.push_back(currentPoint);
     }
-  } else if (pointsToConnect[0].x == pointsToConnect[1].x) {
+  } else if (points_to_connect[0].x == points_to_connect[1].x) {
     //Vertical line
-    int difference = pointsToConnect[0].y - pointsToConnect[1].y;
+    int difference = points_to_connect[0].y - points_to_connect[1].y;
     int numToFill = std::fabs(difference);
-    int yStartLocation = std::min(pointsToConnect[0].y, pointsToConnect[1].y);
+    int yStartLocation = std::min(points_to_connect[0].y, points_to_connect[1].y);
     for (int i = yStartLocation; i <= yStartLocation + numToFill; i++) {
-      mapTools::Point currentPoint;
+      map_tools::geometry::Point2D currentPoint;
       currentPoint.y = i;
-      currentPoint.x = pointsToConnect[0].x;
-      pointsOnLine.push_back(currentPoint);
+      currentPoint.x = points_to_connect[0].x;
+      points_on_line_.push_back(currentPoint);
     }
   } else {
     //Assumed to be best straight line

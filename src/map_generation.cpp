@@ -8,9 +8,9 @@ int main() {
   int maxX = 100;
   int maxY = 30;
   Map myMap(maxX, maxY);
-  myMap.generate();
+  myMap.GenerateMap();
   /*
-  mapTools::Point roomOrigin;
+  map_tools::geometry::Point2D roomOrigin;
   roomOrigin.x = 15;
   roomOrigin.y = 15;
   std::tuple<int,int> roomFreeSpace(10,10);
@@ -19,9 +19,9 @@ int main() {
   roomOrigin.x = roomOrigin.x+30;
   roomOrigin.y = roomOrigin.y;
   roomFreeSpace = std::tuple<int,int>(20,7);
-  myMap.addRoom(roomFreeSpace,roomOrigin);
+  myMap.AddRoom(roomFreeSpace,roomOrigin);
 
-  myMap.addClutterToRoom(1);
+  myMap.AddClutterToRoom(1);
   */
   std::cout << myMap << std::endl;
 

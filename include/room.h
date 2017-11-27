@@ -1,41 +1,27 @@
 
 #pragma once
-#include "map.h"
-#include "common.h"
-//Forward declaration of map class
-class Map;
+#include "map_tools_geometry.h"
+#include <space_representation_2D.h>
 /**
  * @brief Abstract class defining what makes up a Room in a map
- * @details [long description]
- * (0,0)
-    ----------------------------------------
-    ****************      ******************
-    *  Empty Room  *      * Cluttered Room *
-    *			   *      *     **     *   *
-    *              *      *         **     *
-    ****************************************
-    *                                      *
-    *          Large Empty Room            *
-    *                                      *
-    ****************************************
-    ----------------------------------------
- *
+ * @details Note that the origin of the room is the upper left hand corner
  */
 class Room {
  public:
   virtual ~Room() = 0;
-  virtual mapTools::Rect getBoundingBox() = 0;
-  //virtual void addWall(const Wall& wallToAdd) = 0;
-  virtual void addClutter() = 0;
+  virtual map_tools::geometry::Rectangle GetBoundingBox() = 0;
 
  protected:
-  Room(const Map &map) : parentMap(map) {};
-  virtual void populateMap() = 0;
-  //TODO remove this dependency on owning class
-  const Map &parentMap;
-  int xFreeSpace;
-  int yFreeSpace;
-  mapTools::Point origin;
+  Room() = default;
+
+  /**
+   * Protected Ctor, allows derived classes to instanciate a space_matrix_ directly via passing in values to the protected
+   * base class constructor
+   */
+  Room(size_t x_space, size_t y_space, SpaceRepresentation2D::SpaceType fill_type) : space_matrix_(x_space, y_space, fill_type) {};
+  virtual void GenerateRoomEdges() = 0;
+  map_tools::geometry::Point2D origin_;
+  SpaceRepresentation2D space_matrix_;
 };
 
 inline Room::~Room() {}

@@ -26,7 +26,14 @@ class SpaceRepresentation2D {
   };
 
 
-  SpaceRepresentation2D(int size_x_dir, int size_y_dir);
+  /**
+   * \brief Constructs a 2d matrix with max size: size_x_dir, size_y_dir
+   * @param size_x_dir: the size of the space in the x direction
+   * @param size_y_dir: the size of the space in the y direction
+   * \details NOTE: since the space is held in a 2D matrix the x direction corresponds to the number of columns and
+   *                the y direction corresponds to the number of rows in the matrix
+   */
+  SpaceRepresentation2D(size_t size_x_dir, size_t size_y_dir);
 
   ~SpaceRepresentation2D() = default;
 
@@ -45,6 +52,12 @@ class SpaceRepresentation2D {
    * @return The SpaceType value of the element located at row, column
    */
   const SpaceType& operator()(size_t row, size_t column) const;
+
+  /**
+   * \brief allows clients to see the underlying space representation as a vector of vectors
+   * @return
+   */
+  const std::vector<std::vector<SpaceType>>& GetSpaceAsMatrix(void) const;
 
  private:
   std::vector<std::vector<SpaceType>> space_matrix_;

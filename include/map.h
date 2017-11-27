@@ -66,10 +66,29 @@ class Map {
 
   /**
    * @brief Populates a map with rooms and passageways
-   * TODO move this functionality to a factory class
+   * TODO [issue #3] move this functionality to a factory class
    */
   void GenerateMap();
  private:
+
+  /**
+   * \brief the size of the room in the X direction when the default Ctor is called
+   */
+  static constexpr size_t default_map_size_x_ = 30;
+
+  /**
+   * \brief the size of the room in the Y direction when the default Ctor is called
+   */
+  static constexpr size_t default_map_size_y_ = 30;
+
+  /**
+   * \brief limits the max size of any room in the map.  The scale factor limits max_room_size(x/y) to be <= to
+   * room_max_size_scale_factor * size_(x/y)_
+   *
+   * For example, a scale factor of 0.2 will limit the x/y max size of any room to be 20% of the size of the entire map
+   */
+  static constexpr double room_max_size_scale_factor_ = 0.2;
+
   /**
    * \brief size of the map in the x direction, origin top left indexed from 0
    */
@@ -96,21 +115,9 @@ class Map {
   std::vector<std::unique_ptr<Room>> room_vector_;
 
   /**
-   * @brief Prints the numerical representation of the Map's space matrix
-   *
-   */
-  void PrintMatrix();
-
-  /**
    * @brief returns true if two rooms in the map intersect one another
    */
   bool BoundingBoxIntersection(const map_tools::geometry::Rectangle &new_bounding_box);
-
-  /**
-   * @brief Fills space inside of a room
-   *
-   */
-  void AddClutterToRoom(int room_number);
 
   /**
    *

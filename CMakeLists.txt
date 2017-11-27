@@ -20,3 +20,8 @@ target_include_directories(map_lib
 add_executable(map_generation ${CMAKE_CURRENT_SOURCE_DIR}/src/map_generation.cpp)
 
 target_link_libraries(map_generation map_lib)
+
+option(BUILD_TESTS "Will build unit tests if set to ON" ON)
+if(BUILD_TESTS)
+	include(${CMAKE_CURRENT_SOURCE_DIR}/test/MapGenerationTests.cmake)
+endif()

@@ -3,49 +3,52 @@
  */
 #include "map.h"
 #include <random>
-Map::Map() : space_matrix_(30, 30) {
-  this->size_x_ = 30; //Default map size
-  this->size_y_ = 30; //Default map size
+Map::Map() : space_matrix_(default_map_size_x_, default_map_size_y_) {
+  this->size_x_ = default_map_size_x_;
+  this->size_y_ = default_map_size_y_;
   //Rooms should take up less than twenty percent of the maze
-  this->max_room_size_x_ = (0.2 * this->size_x_);
-  this->max_room_size_y_ = (0.2 * this->size_y_);
+  this->max_room_size_x_ = (room_max_size_scale_factor_ * this->size_x_);
+  this->max_room_size_y_ = (room_max_size_scale_factor_ * this->size_y_);
 }
 
 Map::Map(int max_space_x, int max_space_y) : space_matrix_(max_space_x, max_space_y) {
   this->size_x_ = max_space_x;
   this->size_y_ = max_space_y;
-  this->max_room_size_x_ = (0.2 * this->size_x_);
-  this->max_room_size_y_ = (0.2 * this->size_y_);
+  this->max_room_size_x_ = (room_max_size_scale_factor_ * this->size_x_);
+  this->max_room_size_y_ = (room_max_size_scale_factor_ * this->size_y_);
 }
 
+//TODO [issue #3] move this functionality to a factory class
 void Map::GenerateMap() {
 
-  int numberOfAttempts = 0;
-  const int maxAttempts = 50;
+  int number_of_attempts = 0;
+  const int max_attempts = 50;
+  // TODO [issue #2] unify random number generation
   std::random_device rd;
-  std::mt19937_64 randomNumGenerator(rd());
-  std::uniform_int_distribution<> roomUniformX(1, this->max_room_size_x_);
-  std::uniform_int_distribution<> roomUniformY(1, this->max_room_size_y_);
-  std::uniform_int_distribution<> mapUniformX(1, this->size_x_);
-  std::uniform_int_distribution<> mapUniformY(1, this->size_y_);
-  std::tuple<int, int> curRoomFreeSpace;
-  map_tools::geometry::Point2D curRoomOrigin;
-  while (numberOfAttempts <= maxAttempts) {
-    int xFreeSpace = roomUniformX(randomNumGenerator);
-    int yFreeSpace = roomUniformY(randomNumGenerator);
-    curRoomFreeSpace = std::tuple<int, int>(xFreeSpace, yFreeSpace);
+  std::mt19937_64 random_number_generator(rd());
+  std::uniform_int_distribution<> room_uniform_dist_x(1, this->max_room_size_x_);
+  std::uniform_int_distribution<> room_uniform_dist_y(1, this->max_room_size_y_);
+  std::uniform_int_distribution<> map_uniform_dist_x(1, this->size_x_);
+  std::uniform_int_distribution<> map_uniform_dist_y(1, this->size_y_);
+  std::tuple<int, int> potential_room_free_space;
+  map_tools::geometry::Point2D potential_room_origin;
+  while (number_of_attempts <= max_attempts) {
+    int x_free_space = room_uniform_dist_x(random_number_generator);
+    int y_free_space = room_uniform_dist_y(random_number_generator);
+    potential_room_free_space = std::tuple<int, int>(x_free_space, y_free_space);
 
-    curRoomOrigin.x = mapUniformX(randomNumGenerator);
-    curRoomOrigin.y = mapUniformY(randomNumGenerator);
+    potential_room_origin.x = map_uniform_dist_x(random_number_generator);
+    potential_room_origin.y = map_uniform_dist_y(random_number_generator);
 
-    this->AddRoom(curRoomFreeSpace, curRoomOrigin);
-    numberOfAttempts++;
+    this->AddRoom(potential_room_free_space, potential_room_origin);
+    number_of_attempts++;
   }
 
 }
 
 void Map::AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Point2D origin) {
   map_tools::geometry::Rectangle boundingBox;
+  //TODO [issue #4] this transform should be defined and likely a member of SpaceRepresentation2D
   boundingBox.top_left_.x = origin.x - std::get<0>(free_space) / 2;
   boundingBox.top_left_.y = origin.y - std::get<1>(free_space) / 2;
 
@@ -53,9 +56,15 @@ void Map::AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Point2D 
   boundingBox.bottom_right_.y = origin.y + std::get<1>(free_space) / 2;
 
   if (!BoundingBoxIntersection(boundingBox) && BoundingBoxWithinMap(boundingBox)) {
+    //TODO std::make_unique
     std::unique_ptr<RectangleRoom>
-        pRect(new RectangleRoom(std::get<0>(free_space), std::get<1>(free_space), origin));
+        pRect(new RectangleRoom(boundingBox));
+
+    for (auto const &line : pRect->GetRoomEdgesInMapFrame()) {
+      FillSpace(line.GetPointsOnLine());
+    }
     room_vector_.push_back(std::move(pRect));
+
   } else {
     std::cout << "ROOM OVERLAP" << std::endl;
   }
@@ -73,13 +82,6 @@ bool Map::BoundingBoxWithinMap(const map_tools::geometry::Rectangle &new_boundin
   }
 
   return top_and_left_bound_ok & bottom_and_right_bound_ok;
-
-}
-
-void Map::AddClutterToRoom(int room_number) {
-  if (room_number >= 0 && room_number < room_vector_.size()) {
-    room_vector_[room_number]->AddClutter();
-  }
 
 }
 
@@ -115,42 +117,42 @@ void Map::FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill) {
 }
 
 std::ostream &operator<<(std::ostream &os, Map const &map_instance) {
-//  /**
-//	 * Print a row of "-"" at the top of the map
-//	 */
-//  for (auto const &i : map_instance.space_matrix_[0]) {
-//    os << "-";
-//  }
-//   Add an additional 2 "-" for the borders of the map
-//  os << "-" << "-" << std::endl;
-//
-//  for (auto const &i : map_instance.space_matrix_) {
-//    i is a reference to the space_matrix_ vector
-//    os << "|";
-//    for (auto const &j : i) {
-//      j is the value in the
-//      if (j == 0) {
-//        os << " ";
-//      } else if (j == 1) {
-//        os << "*";
-//      }
-//
-//      ! check if j is at the end of the current vector.
-//      if (&j == &i.back()) {
-//        os << "|";
-//      }
-//    }
-//    os << std::endl;
-//  }
-//
-//
-//  /**
-//   * Print a row of -- at the bottom of the map
-//   */
-//  for (auto col : map_instance.space_matrix_[0]) {
-//    os << "-";
-//  }
-//   Add an additional 2 "-" for the borders of the map
-//  os << "-" << "-" << std::endl;
+  /**
+	 * Print a row of "-"" at the top of the map
+	 */
+  for (auto const &i : map_instance.space_matrix_.GetSpaceAsMatrix()[0]) {
+    os << "-";
+  }
+  //Add an additional 2 "-" for the borders of the map
+  os << "-" << "-" << std::endl;
+
+  for (auto const &i : map_instance.space_matrix_.GetSpaceAsMatrix()) {
+    //i is a reference to the space_matrix_ vector
+    os << "|";
+    for (auto const &j : i) {
+      //j is the value in the
+      if (j == SpaceRepresentation2D::SpaceType::Free) {
+        os << " ";
+      } else if (j == SpaceRepresentation2D::SpaceType::Occupied) {
+        os << "*";
+      }
+
+      //! check if j is at the end of the current vector.
+      if (&j == &i.back()) {
+        os << "|";
+      }
+    }
+    os << std::endl;
+  }
+
+
+  /**
+   * Print a row of -- at the bottom of the map
+   */
+  for (auto col : map_instance.space_matrix_.GetSpaceAsMatrix()[0]) {
+    os << "-";
+  }
+  //Add an additional 2 "-" for the borders of the map
+  os << "-" << "-" << std::endl;
   return os;
 }

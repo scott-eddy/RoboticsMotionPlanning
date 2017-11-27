@@ -20,7 +20,7 @@ class RectangleRoom : public Room {
   }
 
  private:
-  void PopulateMap() override;
+  void GenerateRoomEdges() override;
   map_tools::geometry::Rectangle bounding_box_;
 
   // TODO [issue #2] likely owning map should calculate and hold this info

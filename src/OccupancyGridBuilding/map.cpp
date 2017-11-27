@@ -135,6 +135,8 @@ std::ostream &operator<<(std::ostream &os, Map const &map_instance) {
         os << " ";
       } else if (j == SpaceRepresentation2D::SpaceType::Occupied) {
         os << "*";
+      } else if (j == SpaceRepresentation2D::SpaceType::Unknown){
+        os << "=";
       }
 
       //! check if j is at the end of the current vector.

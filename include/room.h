@@ -18,8 +18,8 @@ class Room {
    * Protected Ctor, allows derived classes to instanciate a space_matrix_ directly via passing in values to the protected
    * base class constructor
    */
-  Room(size_t x_space, size_t y_space) : space_matrix_(x_space, y_space) {};
-  virtual void PopulateMap() = 0;
+  Room(size_t x_space, size_t y_space, SpaceRepresentation2D::SpaceType fill_type) : space_matrix_(x_space, y_space, fill_type) {};
+  virtual void GenerateRoomEdges() = 0;
   map_tools::geometry::Point2D origin_;
   SpaceRepresentation2D space_matrix_;
 };

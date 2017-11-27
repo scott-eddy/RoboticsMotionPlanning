@@ -5,15 +5,15 @@
 RectangleRoom::RectangleRoom(const map_tools::geometry::Rectangle& bounding_box) :
 // TODO [issue #2] this room has it's own space representation which are in room corrdinate space, however it should also
 // TODO "pose" that allows transformation back into map space
-Room ((bounding_box.bottom_right_.x - bounding_box.top_left_.x), (bounding_box.bottom_right_.y-bounding_box.top_left_.y))
+Room ((bounding_box.bottom_right_.x - bounding_box.top_left_.x), (bounding_box.bottom_right_.y-bounding_box.top_left_.y), SpaceRepresentation2D::SpaceType::Free)
 {
   bounding_box_ = bounding_box;
   origin_.x = (bounding_box_.bottom_right_.x - bounding_box_.top_left_.x) / 2;
   origin_.y = (bounding_box_.bottom_right_.y - bounding_box_.top_left_.y) / 2;
-  PopulateMap();
+  GenerateRoomEdges();
 }
 
-void RectangleRoom::PopulateMap() {
+void RectangleRoom::GenerateRoomEdges() {
   //Generate the remaining points to define the entire border of the map
   map_tools::geometry::Point2D upper_right_point;
   upper_right_point.x = bounding_box_.bottom_right_.x;

@@ -35,6 +35,16 @@ class SpaceRepresentation2D {
    */
   SpaceRepresentation2D(size_t size_x_dir, size_t size_y_dir);
 
+  /**
+   * \brief Constructs a 2d matrix with max size: size_x_dir, size_y_dir
+   * @param size_x_dir: the size of the space in the x direction
+   * @param size_y_dir: the size of the space in the y direction
+   * @param
+   * \details NOTE: since the space is held in a 2D matrix the x direction corresponds to the number of columns and
+   *                the y direction corresponds to the number of rows in the matrix
+   */
+  SpaceRepresentation2D(size_t size_x_dir, size_t size_y_dir, SpaceType defualt_space_fill);
+
   ~SpaceRepresentation2D() = default;
 
   /**

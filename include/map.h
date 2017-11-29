@@ -54,15 +54,9 @@ class Map {
   /**
    * \brief Generates a pointer to a room containing the requested free space with the given origin
    * @param free_space: The amount of free space (size) the room can occupy in the x and y directions
-   * @param origin: The origin of the room in the Map coordinate frame
+   * @param pose: The origin of the room in the Map coordinate frame as well as the orientation with respect to the map frame
    */
-  void AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Point2D origin);
-
-  /**
-   * @brief Fills the map's space matrix by setting the x,y locations in pointsToFill to one
-   *
-   */
-  void FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill);
+  void AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Pose2D pose);
 
   /**
    * @brief Populates a map with rooms and passageways

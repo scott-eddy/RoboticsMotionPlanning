@@ -9,7 +9,10 @@
 class Room {
  public:
   virtual ~Room() = 0;
-  virtual map_tools::geometry::Rectangle GetBoundingBox() = 0;
+
+   virtual const SpaceRepresentation2D& GetRoomSpaceRepresentation(void){
+   return space_matrix_;
+  };
 
  protected:
   Room() = default;
@@ -19,8 +22,12 @@ class Room {
    * base class constructor
    */
   Room(size_t x_space, size_t y_space, SpaceRepresentation2D::SpaceType fill_type) : space_matrix_(x_space, y_space, fill_type) {};
-  virtual void GenerateRoomEdges() = 0;
-  map_tools::geometry::Point2D origin_;
+
+  /**
+   * The pose of the room with respect to the map.
+   * The location of the pose is the room's center
+   */
+  map_tools::geometry::Pose2D pose_;
   SpaceRepresentation2D space_matrix_;
 };
 

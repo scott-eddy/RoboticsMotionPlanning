@@ -31,39 +31,38 @@ void Map::GenerateMap() {
   std::uniform_int_distribution<> map_uniform_dist_x(1, this->size_x_);
   std::uniform_int_distribution<> map_uniform_dist_y(1, this->size_y_);
   std::tuple<int, int> potential_room_free_space;
-  map_tools::geometry::Point2D potential_room_origin;
+  map_tools::geometry::Pose2D potential_room_pose;
   while (number_of_attempts <= max_attempts) {
     int x_free_space = room_uniform_dist_x(random_number_generator);
     int y_free_space = room_uniform_dist_y(random_number_generator);
     potential_room_free_space = std::tuple<int, int>(x_free_space, y_free_space);
 
-    potential_room_origin.x = map_uniform_dist_x(random_number_generator);
-    potential_room_origin.y = map_uniform_dist_y(random_number_generator);
+    potential_room_pose.location.x = map_uniform_dist_x(random_number_generator);
+    potential_room_pose.location.y = map_uniform_dist_y(random_number_generator);
+    potential_room_pose.orientation = 0.0f; // Aligned x direction
 
-    this->AddRoom(potential_room_free_space, potential_room_origin);
+    this->AddRoom(potential_room_free_space, potential_room_pose);
     number_of_attempts++;
   }
 
 }
 
-void Map::AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Point2D origin) {
+void Map::AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Pose2D room_pose) {
   map_tools::geometry::Rectangle boundingBox;
   //TODO [issue #4] this transform should be defined and likely a member of SpaceRepresentation2D
-  boundingBox.top_left_.x = origin.x - std::get<0>(free_space) / 2;
-  boundingBox.top_left_.y = origin.y - std::get<1>(free_space) / 2;
+  boundingBox.top_left.x = room_pose.location.x - std::get<0>(free_space) / 2;
+  boundingBox.top_left.y = room_pose.location.y - std::get<1>(free_space) / 2;
 
-  boundingBox.bottom_right_.x = origin.x + std::get<0>(free_space) / 2;
-  boundingBox.bottom_right_.y = origin.y + std::get<1>(free_space) / 2;
+  boundingBox.bottom_right.x = room_pose.location.x + std::get<0>(free_space) / 2;
+  boundingBox.bottom_right.y = room_pose.location.y + std::get<1>(free_space) / 2;
 
   if (!BoundingBoxIntersection(boundingBox) && BoundingBoxWithinMap(boundingBox)) {
-    //TODO std::make_unique
-    std::unique_ptr<RectangleRoom>
-        pRect(new RectangleRoom(boundingBox));
+    std::unique_ptr<RectangleRoom> new_room = std::make_unique<RectangleRoom>(boundingBox,room_pose.orientation);
 
-    for (auto const &line : pRect->GetRoomEdgesInMapFrame()) {
-      FillSpace(line.GetPointsOnLine());
-    }
-    room_vector_.push_back(std::move(pRect));
+//    for (auto const &line : new_room->GetRoomEdgesInMapFrame()) {
+//      FillSpace(line.GetPointsOnLine());
+//    }
+//    room_vector_.push_back(std::move(new_room));
 
   } else {
     std::cout << "ROOM OVERLAP" << std::endl;
@@ -73,11 +72,11 @@ void Map::AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Point2D 
 bool Map::BoundingBoxWithinMap(const map_tools::geometry::Rectangle &new_bounding_box) {
   bool top_and_left_bound_ok = false;
   bool bottom_and_right_bound_ok = false;
-  if (new_bounding_box.top_left_.y > 0 && new_bounding_box.top_left_.x > 0) {
+  if (new_bounding_box.top_left.y > 0 && new_bounding_box.top_left.x > 0) {
     top_and_left_bound_ok = true;
   }
 
-  if (new_bounding_box.bottom_right_.x < size_x_ && new_bounding_box.bottom_right_.y < size_y_) {
+  if (new_bounding_box.bottom_right.x < size_x_ && new_bounding_box.bottom_right.y < size_y_) {
     bottom_and_right_bound_ok = true;
   }
 
@@ -90,31 +89,20 @@ bool Map::BoundingBoxIntersection(const map_tools::geometry::Rectangle &potentia
 
   for (auto const &roomInVector : room_vector_) {
 
-    bool leftOfCurrentRoom = (roomInVector->GetBoundingBox().bottom_right_.x < potentialRoom.top_left_.x);
-    bool rightOfCurrentRoom = (roomInVector->GetBoundingBox().top_left_.x > potentialRoom.bottom_right_.x);
-    bool aboveCurrentRoom = (roomInVector->GetBoundingBox().bottom_right_.y < potentialRoom.top_left_.y);
-    bool belowCurrentRoom = (roomInVector->GetBoundingBox().top_left_.y > potentialRoom.bottom_right_.y);
-
-    if (leftOfCurrentRoom || rightOfCurrentRoom || aboveCurrentRoom || belowCurrentRoom) {
-      anyIntersection = false; // room in vector is below current room
-    } else {
-      return true; // boxes overlap
-    }
+//    bool leftOfCurrentRoom = (roomInVector->GetBoundingBox().bottom_right.x < potentialRoom.top_left.x);
+//    bool rightOfCurrentRoom = (roomInVector->GetBoundingBox().top_left.x > potentialRoom.bottom_right.x);
+//    bool aboveCurrentRoom = (roomInVector->GetBoundingBox().bottom_right.y < potentialRoom.top_left.y);
+//    bool belowCurrentRoom = (roomInVector->GetBoundingBox().top_left.y > potentialRoom.bottom_right.y);
+//
+//    if (leftOfCurrentRoom || rightOfCurrentRoom || aboveCurrentRoom || belowCurrentRoom) {
+//      anyIntersection = false;
+//    } else {
+//      anyIntersection = true; // boxes overlap
+//    }
   }
   return anyIntersection;
 }
 
-void Map::FillSpace(std::vector<map_tools::geometry::Point2D> points_to_fill) {
-  for (auto const &currentPoint : points_to_fill) {
-    if (currentPoint.y < size_y_ && currentPoint.x < size_x_) {
-      //N.B. y represents the row you are in and x represents the column
-      space_matrix_(currentPoint.x, currentPoint.y) = SpaceRepresentation2D::SpaceType::Occupied;
-    } else {
-      std::cout << "Doh!" << std::endl;
-      //TODO: throw some error here?
-    }
-  }
-}
 
 std::ostream &operator<<(std::ostream &os, Map const &map_instance) {
   /**

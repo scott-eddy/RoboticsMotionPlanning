@@ -25,7 +25,6 @@ class SpaceRepresentation2D {
     Occupied = 1
   };
 
-
   /**
    * \brief Constructs a 2d matrix with max size: size_x_dir, size_y_dir
    * @param size_x_dir: the size of the space in the x direction

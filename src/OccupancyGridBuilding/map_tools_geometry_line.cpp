@@ -1,5 +1,7 @@
 
-#include "line.h"
+#include "map_tools_geometry_line.h"
+using map_tools::geometry::Line;
+
 Line::Line(std::vector<map_tools::geometry::Point2D> points_to_connect) : points_on_line_(0) {
   this->FindPointsOnLine(points_to_connect);
 }

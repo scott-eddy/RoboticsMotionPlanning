@@ -8,6 +8,20 @@
 /**
  * Ensures that the function operator can be used to both assign values and to access values
  */
+TEST(SpaceRepresenation2dTesting, ASCIIPrintingWorks){
+  // Arrange
+  SpaceRepresentation2D matrix_under_test(3,1);
+
+  matrix_under_test(0,0) = SpaceRepresentation2D::SpaceType::Unknown;
+  matrix_under_test(1,0) = SpaceRepresentation2D::SpaceType::Free;
+  matrix_under_test(2,0) = SpaceRepresentation2D::SpaceType::Occupied;
+
+  std::cout << matrix_under_test << std::endl;
+}
+
+/**
+ * Ensures that the function operator can be used to both assign values and to access values
+ */
 TEST(SpaceRepresenation2dTesting, FunctionOperatorOverload){
   // Arrange
   SpaceRepresentation2D matrix_under_test(1,1);

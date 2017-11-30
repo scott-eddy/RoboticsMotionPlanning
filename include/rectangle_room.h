@@ -1,7 +1,7 @@
 #pragma once
 #include "room.h"
 #include <cmath>
-#include "line.h"
+#include "map_tools_geometry_line.h"
 
 /**
  * \brief A class representing a room that is in the shape of a triangle

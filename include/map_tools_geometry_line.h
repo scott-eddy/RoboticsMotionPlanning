@@ -2,7 +2,7 @@
 #include <vector>
 #include "map_tools_geometry.h"
 #include <cmath>
-
+namespace map_tools::geometry {
 class Line {
  public:
   Line(std::vector<map_tools::geometry::Point2D> points_to_connect);
@@ -13,3 +13,4 @@ class Line {
   std::vector<map_tools::geometry::Point2D> points_on_line_;
   void FindPointsOnLine(std::vector<map_tools::geometry::Point2D> points_to_connect);
 };
+}

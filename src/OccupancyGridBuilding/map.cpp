@@ -3,6 +3,8 @@
  */
 #include "map.h"
 #include <random>
+#include "map_tools_space_transformations.h"
+
 Map::Map() : space_matrix_(default_map_size_x_, default_map_size_y_) {
   this->size_x_ = default_map_size_x_;
   this->size_y_ = default_map_size_y_;
@@ -48,16 +50,11 @@ void Map::GenerateMap() {
 }
 
 void Map::AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Pose2D room_pose) {
-  map_tools::geometry::Rectangle boundingBox;
-  //TODO [issue #4] this transform should be defined and likely a member of SpaceRepresentation2D
-  boundingBox.top_left.x = room_pose.location.x - std::get<0>(free_space) / 2;
-  boundingBox.top_left.y = room_pose.location.y - std::get<1>(free_space) / 2;
-
-  boundingBox.bottom_right.x = room_pose.location.x + std::get<0>(free_space) / 2;
-  boundingBox.bottom_right.y = room_pose.location.y + std::get<1>(free_space) / 2;
+  map_tools::geometry::Rectangle
+      boundingBox = map_tools::space_transformations::GetBoundingBoxFromPoseAndSize(free_space, room_pose.location);
 
   if (!BoundingBoxIntersection(boundingBox) && BoundingBoxWithinMap(boundingBox)) {
-    std::unique_ptr<RectangleRoom> new_room = std::make_unique<RectangleRoom>(boundingBox,room_pose.orientation);
+    std::unique_ptr<RectangleRoom> new_room = std::make_unique<RectangleRoom>(boundingBox, room_pose.orientation);
 
 //    for (auto const &line : new_room->GetRoomEdgesInMapFrame()) {
 //      FillSpace(line.GetPointsOnLine());
@@ -103,46 +100,7 @@ bool Map::BoundingBoxIntersection(const map_tools::geometry::Rectangle &potentia
   return anyIntersection;
 }
 
-
 std::ostream &operator<<(std::ostream &os, Map const &map_instance) {
-  /**
-	 * Print a row of "-"" at the top of the map
-	 */
-  for (auto const &i : map_instance.space_matrix_.GetSpaceAsMatrix()[0]) {
-    os << "-";
-  }
-  //Add an additional 2 "-" for the borders of the map
-  os << "-" << "-" << std::endl;
-
-  for (auto const &i : map_instance.space_matrix_.GetSpaceAsMatrix()) {
-    //i is a reference to the space_matrix_ vector
-    os << "|";
-    for (auto const &j : i) {
-      //j is the value in the
-      if (j == SpaceRepresentation2D::SpaceType::Free) {
-        os << " ";
-      } else if (j == SpaceRepresentation2D::SpaceType::Occupied) {
-        os << "*";
-      } else if (j == SpaceRepresentation2D::SpaceType::Unknown){
-        os << "=";
-      }
-
-      //! check if j is at the end of the current vector.
-      if (&j == &i.back()) {
-        os << "|";
-      }
-    }
-    os << std::endl;
-  }
-
-
-  /**
-   * Print a row of -- at the bottom of the map
-   */
-  for (auto col : map_instance.space_matrix_.GetSpaceAsMatrix()[0]) {
-    os << "-";
-  }
-  //Add an additional 2 "-" for the borders of the map
-  os << "-" << "-" << std::endl;
+  os << map_instance.space_matrix_;
   return os;
 }

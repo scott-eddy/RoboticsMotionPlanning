@@ -26,6 +26,11 @@ class SpaceRepresentation2D {
   };
 
   /**
+   * Don't allow a default constructor, must specify size
+   */
+  SpaceRepresentation2D() = delete;
+
+  /**
    * \brief Constructs a 2d matrix with max size: size_x_dir, size_y_dir
    * @param size_x_dir: the size of the space in the x direction
    * @param size_y_dir: the size of the space in the y direction
@@ -63,14 +68,48 @@ class SpaceRepresentation2D {
   const SpaceType& operator()(size_t row, size_t column) const;
 
   /**
+   *
    * \brief allows clients to see the underlying space representation as a vector of vectors
    * @return
    */
+  // TODO issue #6, don't expose this to the public API
   const std::vector<std::vector<SpaceType>>& GetSpaceAsMatrix(void) const;
 
+  const size_t GetSizeX(void) const {
+    return size_x_dir_;
+  }
+
+  const size_t GetSizeY(void) const {
+    return size_y_dir_;
+  }
+
+  /**
+   * @brief Prints the 2D space as ASCII
+   * @details Prints a representation of the space with free space
+   *          printed as " " and occupied space printed with "*", and unkown filled with a "="
+   *          The map is bordered with "-" at top and bottom and "|"
+   *          on either side
+   *
+   * @param os ostream to be printed to
+   * @param map_instance map object to be printed out
+   */
+  friend std::ostream &operator<<(std::ostream &os, const SpaceRepresentation2D& space_instance);
+
  private:
+  /**
+   * A matrix representing the 2D space and how it is filled
+   */
   std::vector<std::vector<SpaceType>> space_matrix_;
 
+  /**
+   * The maximum size of the space in the x direction
+   */
+  size_t size_x_dir_;
+
+  /**
+   * The maximum size of the space in the y direction
+   */
+  size_t size_y_dir_;
 
 };
 

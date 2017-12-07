@@ -9,6 +9,15 @@
 #include "map_tools_geometry.h"
 namespace map_tools::space_transformations {
 
+
+/**
+ *
+ * @param point_to_transform
+ * @param orientation
+ * @param origin_translation
+ * @return
+ */
+// TODO 12/2017 what about other types of translation
 map_tools::geometry::Point2D TransformPoint(const map_tools::geometry::Point2D &point_to_transform,
                                             double orientation,
                                             const map_tools::geometry::Point2D &origin_translation);

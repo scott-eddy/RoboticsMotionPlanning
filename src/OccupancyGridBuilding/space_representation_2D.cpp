@@ -16,19 +16,17 @@ SpaceRepresentation2D::SpaceRepresentation2D(size_t size_x_dir, size_t size_y_di
   space_matrix_(size_y_dir, std::vector<SpaceType>(size_x_dir, defualt_space_fill)) {
 }
 
-SpaceRepresentation2D::SpaceType& SpaceRepresentation2D::operator()(size_t row, size_t column){
-  return space_matrix_[column][row];
+SpaceRepresentation2D::SpaceType& SpaceRepresentation2D::operator()(size_t x_location, size_t y_location){
+  return space_matrix_[y_location][x_location];
 }
 
-const SpaceRepresentation2D::SpaceType& SpaceRepresentation2D::operator()(size_t row, size_t column) const{
-  return space_matrix_[column][row];
+const SpaceRepresentation2D::SpaceType& SpaceRepresentation2D::operator()(size_t x_location, size_t y_location) const{
+  return space_matrix_[y_location][x_location];
 }
 
 const std::vector<std::vector<SpaceRepresentation2D::SpaceType>>& SpaceRepresentation2D::GetSpaceAsMatrix() const {
   return space_matrix_;
 }
-
-
 
 std::ostream &operator<<(std::ostream &os, const SpaceRepresentation2D& space_instance){
   /**

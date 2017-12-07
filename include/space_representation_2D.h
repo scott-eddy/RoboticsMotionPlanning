@@ -53,19 +53,19 @@ class SpaceRepresentation2D {
 
   /**
    * Allow assignment of an element in the space matrix by returning a reference to the element
-   * @param row: The column within the matrix to access
-   * @param column: The column within the matrix to access
+   * @param x_location: The column within the matrix to access
+   * @param y_location: The column within the matrix to access
    * @return The SpaceType value of the element located at row, column
    */
-  SpaceType& operator()(size_t row, size_t column);
+  SpaceType& operator()(size_t x_location, size_t y_location);
 
   /**
    * Allow accessing a const reference of an element in the space matrix
-   * @param row: The column within the matrix to access
-   * @param column: The column within the matrix to access
+   * @param x_location: The column within the matrix to access
+   * @param y_location: The column within the matrix to access
    * @return The SpaceType value of the element located at row, column
    */
-  const SpaceType& operator()(size_t row, size_t column) const;
+  const SpaceType& operator()(size_t x_location, size_t y_location) const;
 
   /**
    *
@@ -73,6 +73,7 @@ class SpaceRepresentation2D {
    * @return
    */
   // TODO issue #6, don't expose this to the public API
+  // TODO issue #6, a better API perhaps returns a tuple of all the Point2Ds of the matrix and
   const std::vector<std::vector<SpaceType>>& GetSpaceAsMatrix(void) const;
 
   const size_t GetSizeX(void) const {

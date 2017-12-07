@@ -6,7 +6,8 @@ project (RoboticsMotionPlanning)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(map_tools ${CMAKE_CURRENT_LIST_DIR}/src/OccupancyGridBuilding/map_tools_space_transformations.cpp)
+add_library(map_tools
+		${CMAKE_CURRENT_LIST_DIR}/src/OccupancyGridBuilding/map_tools_space_transformations.cpp)
 target_include_directories(map_tools
 		BEFORE
 		PUBLIC
@@ -14,7 +15,7 @@ target_include_directories(map_tools
 
 add_library(map_lib ${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/map.cpp
 					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/rectangle_room.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/map_tools_geometry_line.cpp
+					${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/map_tools_geometry_line.cpp
         			${CMAKE_CURRENT_SOURCE_DIR}/src/OccupancyGridBuilding/space_representation_2D.cpp
 					)
 target_include_directories(map_lib

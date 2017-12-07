@@ -51,7 +51,7 @@ void Map::GenerateMap() {
 
 void Map::AddRoom(std::tuple<int, int> free_space, map_tools::geometry::Pose2D room_pose) {
   map_tools::geometry::Rectangle
-      boundingBox = map_tools::space_transformations::GetBoundingBoxFromPoseAndSize(free_space, room_pose.location);
+      boundingBox = map_tools::space_transformations::GetBoundingBoxFromPoseAndSize(free_space, room_pose);
 
   if (!BoundingBoxIntersection(boundingBox) && BoundingBoxWithinMap(boundingBox)) {
     std::unique_ptr<RectangleRoom> new_room = std::make_unique<RectangleRoom>(boundingBox, room_pose.orientation);
